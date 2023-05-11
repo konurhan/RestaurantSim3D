@@ -48,8 +48,7 @@ public class Cook : MonoBehaviour
             foodObject.GetComponent<Food>().SetValues(recipeData);
             foodObject.GetComponent<Food>().Quality= quality;
             foodObject.GetComponent<Food>().Orderer= orderer;
-            preparedRecipe = foodObject;
-            //RestaurantManager.Instance.readyQueue.Enqueue(new KeyValuePair<GameObject, Customer>(foodObject, orderer));
+            preparedRecipe = foodObject;        
         }
         else
         {
@@ -58,8 +57,9 @@ public class Cook : MonoBehaviour
             drinkObject.GetComponent<Drink>().Quality = quality;
             drinkObject.GetComponent<Drink>().Orderer = orderer;
             preparedRecipe = drinkObject;
-            //RestaurantManager.Instance.readyQueue.Enqueue(new KeyValuePair<GameObject, Customer>(drinkObject, orderer));
         }
+        preparedRecipe.transform.parent = gameObject.transform;//cook parents the order, waiter should take on the parenthood
+        preparedRecipe.transform.localPosition = Vector3.forward;
         GainExperience();
         LevelUp();
     }

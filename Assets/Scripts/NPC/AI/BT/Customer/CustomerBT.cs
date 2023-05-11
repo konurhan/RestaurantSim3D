@@ -53,7 +53,7 @@ public class CustomerBT : BehaviorTree
                             new CheckIfOrdered(NPCController)//if already ordered continue with waiting task
                         }),
                         
-                        new CallWaiterTask(NPCController),
+                        new CallWaiterTask(NPCController),//calls waiter if not already called
                         new WaitForWaiterToTakeOrderTask(NPCController),
                         new MakeAnOrderTask(NPCController)
                     }),

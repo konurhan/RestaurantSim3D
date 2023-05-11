@@ -10,6 +10,7 @@ public class Customer : MonoBehaviour
     [SerializeField] private int hunger;//on the scale of 100
     [SerializeField] private int thirst;//on the scale of 100
     [SerializeField] private int serviceScore;
+    public int basePatience;
     public bool isSeated;
     public bool isCalledWaiter;
     public bool isOrdered;
@@ -22,26 +23,22 @@ public class Customer : MonoBehaviour
 
     public NavMeshAgent agent;
 
-    /*public bool IsWaiting 
-    {
-        get { return isWaiting; }
-        set { isWaiting = value; }
-    }*/
-
     private void Start()
     {
         agent = transform.gameObject.GetComponent<NavMeshAgent>();
         isWaitingToEatDrink = true;
         isWaitingToOrder = true;
-        patience = 100000;
+        basePatience = 10000;
+        patience = basePatience;
         satisfactionScore = 0;
-        hunger = Random.Range(0, 60);
-        thirst = Random.Range(0, 60);
+        hunger = Random.Range(75, 80);
+        thirst = Random.Range(75, 80);
         serviceScore = 0;
         inventory = new List<GameObject>();
         isSeated = false;
         seatTransform = null;//seat is not assigned
         isOrdered = false;
+        isOrderArrived = false;
     }
 
     private void Update()
@@ -58,7 +55,7 @@ public class Customer : MonoBehaviour
     {
         Destroy(inventoryFoodDrink);
     }
-    public void Consume(GameObject inventoryFoodDrink)//make this a coroutine
+    /*public void Consume(GameObject inventoryFoodDrink)//make this a coroutine
     {
         IRecipe order;
         if (inventoryFoodDrink.GetComponent<Food>()) order = inventoryFoodDrink.GetComponent<Food>();//if food is delivered
@@ -76,54 +73,24 @@ public class Customer : MonoBehaviour
         //after consuming
         inventory.Remove(inventoryFoodDrink);
         Destroy(inventoryFoodDrink);
-    }
-
-    /*public void CallWaiterToOrder(IRecipeData orderData)
-    {
-        isWaitingToOrder = true;
-        isWaitingToEatDrink = true;
-        RestaurantManager.Instance.orderRequestQueue.Enqueue(this.gameObject);//adding customer to the order request queue soon a waiter will arrive.
-        StartCoroutine(WaitForOrder());
-    }*/
-
-    /*public void GiveOrder()//this will be ticked continuously by the behavior tree
-    {
-        //isWaiting = false;
-        if (!isWaitingToOrder)
-        {
-            //make a random order here
-            IRecipeData order = RestaurantManager.Instance.menu.GetComponent<Menu>().Foods[0];
-            //
-            Customer orderer = this;
-            CustomerOrder newOrder = new CustomerOrder(order, orderer);
-            RestaurantManager.Instance.orderQueue.Enqueue(newOrder);
-        }
     }*/
 
     public void TakeOnOrder(GameObject order)
     {
         inventory.Add(order);
+        RestaurantManager.Instance.money += order.GetComponent<IRecipe>().Price;//customer makes the payment
     }
-    /*public IEnumerator WaitForOrder()
-    {
-        while (true)
-        {
-            if (patience > 0) patience--;
-            else { Leave(); break; }
 
-            if (!isWaitingToEatDrink) break;
-            yield return new WaitForSeconds(5);
-        }
-    }*/
     public void RateService()
     {
-        float score = ((satisfactionScore + serviceScore) / 100) - 1;//score is bw -1 and 1
+        float score = satisfactionScore + serviceScore;
         RestaurantManager.Instance.popularity += score;
     }
 
     public void Leave()
     {
         RateService();
+        Destroy(gameObject);
     }
 
     public int Thirst

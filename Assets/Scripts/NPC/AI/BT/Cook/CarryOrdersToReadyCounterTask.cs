@@ -21,6 +21,7 @@ public class CarryOrdersToReadyCounterTask : Node
                 if (!agent.hasPath || agent.velocity.sqrMagnitude == 0f)
                 {
                     Debug.Log("Cook arrived to readycounter");
+                    RestaurantManager.Instance.AddObjectToReadyCounter(cook.preparedRecipe);
                     RestaurantManager.Instance.readyQueue.Enqueue(new KeyValuePair<GameObject, Customer>(cook.preparedRecipe, cook.currentOrder.orderer));
                     cook.delivering = false;
                     cook.preparedRecipe = null;

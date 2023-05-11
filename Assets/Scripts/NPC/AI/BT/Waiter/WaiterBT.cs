@@ -23,7 +23,7 @@ public class WaiterBT : BehaviorTree
                 new CurrentCustomerCheck(NPCController),
                 //new orderRequestQueueCheck(),
                 new GoToCustomerTask(NPCController),
-                new AddOrderTask(NPCController)
+                //new AddOrderTask(NPCController)
             }),
 
             //deliver order sequence
@@ -31,8 +31,8 @@ public class WaiterBT : BehaviorTree
             {
                 new readyOrdersCheck(NPCController),
                 new GoToKitchenTask(NPCController),
-                new RecieveOrdersTask(NPCController),
-                new CarryOrdersToCustomersTask(NPCController)
+                new RecieveOrdersTask(NPCController),//at the end of this task we give the first customer destination
+                new CarryOrdersToCustomersTask(NPCController)//test this with more then one customers
             })
         });
 

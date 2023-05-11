@@ -152,7 +152,7 @@ public static class SaveSystem
             {ingredient3,1 },
             {ingredient4,1 },
         };
-        FoodData newFood = new FoodData("sampleSoup", 0, ingredientsFood, 6, 4, 8, true);
+        FoodData newFood = new FoodData("onionSoup", 0, ingredientsFood, 6, 4, 8, true);
         newFoodsData.Add(newFood);
 
         ingredient1 = new KeyValuePair<string, int>("orange", 1);
@@ -166,7 +166,7 @@ public static class SaveSystem
             {ingredient4,1 },
         };
 
-        DrinkData newDrink = new DrinkData("sampleFruitJuice", 0, ingredientsDrink, 7, 8, 1, false);
+        DrinkData newDrink = new DrinkData("mixedFruitJuice", 0, ingredientsDrink, 7, 8, 1, false);
         newDrinksData.Add(newDrink);
         return newMenuData;
     }

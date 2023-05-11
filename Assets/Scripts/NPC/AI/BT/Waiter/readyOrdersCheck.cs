@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class readyOrdersCheck : Node
 {
@@ -16,9 +17,15 @@ public class readyOrdersCheck : Node
             nodeState = NodeState.FAILED;
             return nodeState;
         }
-        else
+        else if(!waiter.delivering)
         {
             waiter.delivering = true;
+            waiter.gameObject.GetComponent<NavMeshAgent>().SetDestination(RestaurantManager.Instance.RestaurantComponents.GetChild(5).transform.position);//send waiter to kitchen to fetch the order
+            nodeState = NodeState.SUCCEED;
+            return nodeState;
+        }
+        else
+        {
             nodeState = NodeState.SUCCEED;
             return nodeState;
         }

@@ -30,7 +30,8 @@ public class CheckForEmptySeat : Node
                 return nodeState;
             }
         }
-        
+
+        RestaurantManager.Instance.deniedCustomers++;
         nodeState = NodeState.FAILED;
         return nodeState;
     }

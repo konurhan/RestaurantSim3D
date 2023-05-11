@@ -18,17 +18,20 @@ public class WaitForOrderTask : Node
             {
                 customer.isLeaving = true;
                 nodeState = NodeState.FAILED;
+
+                RestaurantManager.Instance.angryCustomers++;
                 return nodeState;
             }
             else
             {
-                Debug.Log("Customer is waiting for order");
+                
                 nodeState = NodeState.RUNNING;
                 return nodeState;
             }
         }
         else
         {
+            Debug.Log("Customer gets the order");
             nodeState = NodeState.SUCCEED;
             return nodeState;
         }

@@ -19,12 +19,15 @@ public class Waiter : MonoBehaviour
     [SerializeField] public Dictionary<GameObject, Customer> inventory;//order owner pair
     [SerializeField] public Customer currentCustomer;//customer to take order from
     [SerializeField] public bool delivering;//flag that shows if a waiter is delivering or not
+    public bool pickedUpOrders;
 
     public NavMeshAgent agent;
 
     private void Start()
     {
         agent = transform.gameObject.GetComponent<NavMeshAgent>();
+        inventory = new Dictionary<GameObject, Customer>();
+        pickedUpOrders = false;
     }
     public bool CanLevelUp()
     {
@@ -35,46 +38,62 @@ public class Waiter : MonoBehaviour
     {
         if (CanLevelUp()) { level++; speed++; capacity++; wage++; }
     }
-    /*public void TakeOrder(IRecipeData order, Customer orderer) 
-    {
-        CustomerOrder newOrder = new CustomerOrder(order, orderer);
-        RestaurantManager.Instance.orderQueue.Enqueue(newOrder);
-    }*/
 
-    public void GoToPickupReadyOrders()//if idle and readyque is not empty
+    public void PickUpReadyOrders()//if idle and readyque is not empty
     {
-
-    }
-    /*public void PickUpReadyOrders()//if idle and readyque is not empty
-    {
-        while(inventory.Count <capacity) 
+        while(inventory.Count < capacity) 
         {
+            if (RestaurantManager.Instance.readyQueue.Count == 0)
+            {
+                break;
+            }
             KeyValuePair<GameObject, Customer> pair = RestaurantManager.Instance.readyQueue.Dequeue();
+            RestaurantManager.Instance.RemoveObjectFromReadyCounter(pair.Key);
             inventory.Add(pair.Key, pair.Value);
+            pair.Key.transform.parent = gameObject.transform;
         }
-        
-    }*/
-    /*public void DeliverOrders()//when inventory is full or all items are taken, deliver them one by one
-    {
-        foreach (KeyValuePair<GameObject,Customer> pair in inventory)
-        {
-            GameObject order = pair.Key;
-            Customer orderer = pair.Value;
-            GoToDeliverOrder(new Vector2(orderer.transform.position.x, orderer.transform.position.y));
-            DeliverOrder(order, orderer);
-        }
-    }*/
-    public void GoToDeliverOrder(Vector2 customerLocation)//go to a customers loacation
-    {
-        //navigate to customer
-        //A* needs to be implemented to navigate the waiter NPC
+        ArrangeOnTrayObjects();
+
     }
+
+    public void PutOrderOnTray(GameObject order)
+    {
+        inventory.Add(order, order.GetComponent<IRecipe>().Orderer);
+        ArrangeOnTrayObjects();
+    }
+
+    public void RemoveOrderFromTray(GameObject order)
+    {
+        inventory.Remove(order);
+        ArrangeOnTrayObjects();
+    }
+
+    public void ArrangeOnTrayObjects()
+    {
+        Transform centerOfTray = gameObject.transform.GetChild(0);
+        Debug.Log("center of tray local position is" + centerOfTray.localPosition);
+        int onTrayOrdersCount = inventory.Count;
+        int sliceCount = 0;
+        float radius = 0.5f;
+        foreach (KeyValuePair<GameObject, Customer> order in inventory)
+        {
+            float degree = 2*Mathf.PI * sliceCount / onTrayOrdersCount;
+            Debug.Log("degree of a slice is " + degree);
+            Vector3 offset = new Vector3(radius*Mathf.Sin(degree), 0, -radius * Mathf.Cos(degree));
+            Debug.Log("offset of slice " + (sliceCount + 1) + " is: " + offset);
+            order.Key.transform.localPosition = centerOfTray.localPosition + offset;
+
+            Debug.Log("localPos of slice "+(sliceCount+1)+" is: " + order.Key.transform.localPosition);
+            sliceCount++;
+        }
+    }
+
     public void DeliverOrder(GameObject order, Customer customer)//hand in the order to the customer
     {
         //carry the order to the customer and leave on the table
         if(customer.isWaitingToEatDrink && !customer.isLeaving)//do this case where the DeliverOrder function is triggered.
         {
-            inventory.Remove(order);
+            RemoveOrderFromTray(order);
             customer.TakeOnOrder(order);
             customer.isWaitingToEatDrink = false;
             customer.isOrderArrived = true;
@@ -82,13 +101,14 @@ public class Waiter : MonoBehaviour
             LevelUp();
         }
         
+        else if(customer.isLeaving)
+        {
+            Debug.Log("Customer is leaving, order was late. It will go to trash :(");
+            inventory.Remove(order);
+            Destroy(order);
+        }
+        
     }
-
-    /*public void GoToTakeOrder()//navigate to the customer, A* code comes here ore used here
-    {
-        //navigate to customer
-        //A* needs to be implemented to navigate the waiter NPC
-    }*/
 
     public void GainExperience()
     {

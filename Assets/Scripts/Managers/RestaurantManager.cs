@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class RestaurantManager : MonoBehaviour
@@ -10,9 +11,14 @@ public class RestaurantManager : MonoBehaviour
     [SerializeField] public int capacity;
     [SerializeField] public float popularity;
 
-    public Transform RestaurantComponents;
+    public int satisfiedCustomers;//reset at the end of the day
+    public int angryCustomers;//reset at the end of the day
+    public int deniedCustomers;//reset at the end of the day
 
-    public List<GameObject> seats;//seatID, occupant pair
+    public Transform RestaurantComponents;
+    public Transform InGameUIComponents;
+
+    public List<GameObject> seats;
 
     public GameObject menu;
 
@@ -45,11 +51,15 @@ public class RestaurantManager : MonoBehaviour
         CacheSeats();
 
         Storage.instance.printStoredGoods();
+
+        satisfiedCustomers = 0;
+        angryCustomers = 0;
+        deniedCustomers = 0;
     }
 
     void Update()
     {
-
+        UITopBarUpdate();
     }
 
     public void IncreaseCapacity()
@@ -246,4 +256,54 @@ public class RestaurantManager : MonoBehaviour
             }
         }
     }
+
+    public void AddObjectToReadyCounter(GameObject readyOrder)
+    {
+        Transform readyCounter = RestaurantComponents.GetChild(5);
+        readyOrder.transform.parent = readyCounter;
+        ArrangeReadyCounterObjects();
+    }
+
+    public void RemoveObjectFromReadyCounter(GameObject readyOrder)
+    {
+        //Transform readyCounter = RestaurantComponents.GetChild(5);
+        readyOrder.transform.parent = null;
+        ArrangeReadyCounterObjects();
+    }
+
+    public void ArrangeReadyCounterObjects()
+    {
+        //int readyCount = readyQueue.Count;
+        int cursor = 0;
+        foreach (KeyValuePair <GameObject, Customer> pair in readyQueue) 
+        {
+            pair.Key.transform.localPosition = Vector3.up - 2 * Vector3.left + (cursor * Vector3.right) / 4;
+            cursor++;
+        }
+    }
+
+    public void StartOfNewDayUpdate()
+    {
+        deniedCustomers = 0;
+        satisfiedCustomers = 0;
+        angryCustomers = 0;
+    }
+
+    public void UITopBarUpdate()
+    {
+        Transform topBar = InGameUIComponents.GetChild(0);
+        TextMeshProUGUI popNum = topBar.GetChild(1).GetComponent<TextMeshProUGUI>();
+        TextMeshProUGUI moneyNum = topBar.GetChild(3).GetComponent<TextMeshProUGUI>();
+        TextMeshProUGUI servedNum = topBar.GetChild(5).GetComponent<TextMeshProUGUI>();
+        TextMeshProUGUI deniedNum = topBar.GetChild(7).GetComponent<TextMeshProUGUI>();
+        TextMeshProUGUI capacityNum = topBar.GetChild(9).GetComponent<TextMeshProUGUI>();
+
+        popNum.text = popularity.ToString();
+        moneyNum.text = money.ToString();
+        servedNum.text = satisfiedCustomers.ToString();
+        deniedNum.text = deniedCustomers.ToString();
+        capacityNum.text = capacity.ToString();
+    }
+
+
 }

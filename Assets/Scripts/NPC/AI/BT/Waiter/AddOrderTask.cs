@@ -5,7 +5,6 @@ using UnityEngine;
 public class AddOrderTask : Node
 {
     Waiter waiter;
-    Customer customer;
     public AddOrderTask(Waiter waiter)
     {
         this.waiter = waiter;
@@ -15,14 +14,13 @@ public class AddOrderTask : Node
         
         //signal customer to give order, customer method will add the order to list
 
-        if(customer == null)
+        if(waiter.currentCustomer == null)
         {
             nodeState = NodeState.FAILED;//customer has left before we could take his order
             return nodeState;
         }
         else
         {
-            customer = waiter.currentCustomer;
             waiter.currentCustomer = null;//customer order is successfully taken
             nodeState = NodeState.SUCCEED;
             return nodeState;

@@ -14,7 +14,7 @@ public class PrepareOrderTask : Node
     {
         if(cook.preperationTime > 0)
         {
-            cook.preperationTime--;
+            cook.preperationTime-=20;
             //play cooking animation here
             nodeState = NodeState.RUNNING;
             return nodeState;

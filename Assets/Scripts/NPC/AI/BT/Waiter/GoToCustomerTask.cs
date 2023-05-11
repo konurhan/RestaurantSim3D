@@ -24,27 +24,6 @@ public class GoToCustomerTask : Node
         }
         customer = waiter.currentCustomer;
 
-        /*if (!agent.hasPath && !agent.pathPending)//agent has no path and no path is currently being calculated
-        {
-            if ((agent.transform.position - customer.seatTransform.position).magnitude <= agent.stoppingDistance)
-            {//if agent is reached to its target and stopped
-                customer.isWaitingToOrder = false;
-                nodeState = NodeState.SUCCEED;
-                return nodeState;
-            }
-            else//if agent has no destination set
-            {
-                agent.SetDestination(customer.seatTransform.position);
-                nodeState = NodeState.RUNNING;
-                return nodeState;
-            }
-        }
-        else//agent currently has a destination
-        {
-            nodeState = NodeState.RUNNING;
-            return nodeState;
-        }*/
-
         if (!agent.pathPending)
         {
             if (agent.remainingDistance <= agent.stoppingDistance)
@@ -53,6 +32,7 @@ public class GoToCustomerTask : Node
                 {
                     Debug.Log("waiter arrived to his customer");
                     customer.isWaitingToOrder = false;
+                    waiter.currentCustomer = null;
                     nodeState = NodeState.SUCCEED;
                     return nodeState;
                 }
