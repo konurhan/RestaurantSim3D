@@ -34,7 +34,8 @@ public class Cook : MonoBehaviour
     }
     public void LevelUp()
     {
-        if (CanLevelUp()) { level++; speed++; talent++; wage++; }
+        if (CanLevelUp()) { level++; speed++; talent++; wage++; Debug.Log("a waiter has leveled up"); }
+        else { Debug.Log("cook do not have enough xp's to level up"); }
     }
     public void PrepareOrder(CustomerOrder customerOrder)//If a cook is idle and orderQueue is not empty call this method
     {
@@ -61,7 +62,7 @@ public class Cook : MonoBehaviour
         preparedRecipe.transform.parent = gameObject.transform;//cook parents the order, waiter should take on the parenthood
         preparedRecipe.transform.localPosition = Vector3.forward;
         GainExperience();
-        LevelUp();
+        //LevelUp();
     }
     public bool IsEnoughInventory(IRecipeData ordered)
     {

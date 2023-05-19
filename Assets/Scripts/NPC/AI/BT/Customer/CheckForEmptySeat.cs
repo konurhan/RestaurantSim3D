@@ -32,6 +32,8 @@ public class CheckForEmptySeat : Node
         }
 
         RestaurantManager.Instance.deniedCustomers++;
+        CustomerArrivalManager.Instance.CheckForEndOfTheDay();
+
         nodeState = NodeState.FAILED;
         return nodeState;
     }

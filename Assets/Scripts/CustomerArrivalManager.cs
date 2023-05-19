@@ -12,7 +12,9 @@ public class CustomerArrivalManager : MonoBehaviour
 
     public int count = 0;
 
-    private int dailyCount; 
+    private int dailyCount;
+
+    private bool dayHasEnded;
 
     private void Awake()
     {
@@ -21,38 +23,52 @@ public class CustomerArrivalManager : MonoBehaviour
 
     private void Start()
     {
-        InstantiateCustomersOfRandomQuantity();
-        counter = 2000;
+        StartOfTheDayOperations();
+    }
+
+    private void FixedUpdate()
+    {
+        count++;
+        if (counter == count && !dayHasEnded) 
+        {
+            InstantiateCustomer();
+            count = 0;
+        }
         
     }
 
-    private void Update()
+    public void CheckForEndOfTheDay()
     {
-        count++;
-        if (counter == count) 
+        if (RestaurantManager.Instance.angryCustomers + RestaurantManager.Instance.satisfiedCustomers + RestaurantManager.Instance.deniedCustomers == dailyCount)
         {
-            InstantiateCustomersOfRandomQuantity();
-            count = 0;
-        }
-
-        //put this inside a method and trigger it after all the customers arrived
-        //or better make this check inside RestaurantManager and then trigger EndOfTheDayOperations method
-        if(RestaurantManager.Instance.angryCustomers+ RestaurantManager.Instance.satisfiedCustomers+ RestaurantManager.Instance.deniedCustomers == dailyCount) 
-        { 
-            //finish the day
+            EndOfTheDayOperations();
         }
     }
 
     public void StartOfTheDayOperations()
     {
+        dayHasEnded = false;
         float pop = RestaurantManager.Instance.popularity;
         dailyCount = (int)Random.Range(pop - pop / 10, pop + pop / 10);
+        counter = (int)(180 / Time.fixedDeltaTime) / dailyCount;
     }
 
-    public void InstantiateCustomersOfRandomQuantity()//instantiate customers to arrive at random times of the day
+    public void EndOfTheDayOperations()
+    {
+        dayHasEnded = true;
+        //finish the day
+
+        //reset certain parammeters
+
+
+        //open end of the day canvas
+    }
+
+    public void InstantiateCustomer()//instantiate customers to arrive at random times of the day
     {
         GameObject customer = Instantiate(Resources.Load("Prefab/Customer"), customerSpawnTransform.position, Quaternion.identity) as GameObject;
+        customer.transform.SetParent(RestaurantManager.Instance.RestaurantComponents.GetChild(6), true);
     }
 
-
+    
 }

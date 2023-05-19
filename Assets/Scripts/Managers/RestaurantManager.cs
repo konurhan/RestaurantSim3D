@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using TMPro;
 using UnityEngine;
 
@@ -77,6 +78,7 @@ public class RestaurantManager : MonoBehaviour
         popularity = newPopularity;
     }
 
+    #region HireFire
     public void HireWaiter(WaiterData newWaiterData)
     {
         GameObject waiterObject = Instantiate(Resources.Load("Prefab/Waiter")) as GameObject;
@@ -131,6 +133,21 @@ public class RestaurantManager : MonoBehaviour
         Debug.Log("Couldn't find the cook corresponding to the cookData, deletion is unsuccesfull");
     }
 
+    public void FireWaiterByIndex(int index)
+    {
+        GameObject removed = waiters[index];
+        waiters.RemoveAt(index);
+        Destroy(removed);
+    }
+
+    public void FireCookByIndex(int index)
+    {
+        GameObject removed = cooks[index];
+        cooks.RemoveAt(index);
+        Destroy(removed);
+    }
+
+    #endregion
     public void BuyIngredient(KeyValuePair<string, int> newIngredient)
     {
         Storage.instance.AddIngredient(newIngredient);
@@ -238,6 +255,16 @@ public class RestaurantManager : MonoBehaviour
         SaveStats();
         SaveCooks(cooks);
         SaveWaiters(waiters);
+    }
+
+    public void ResetGame()
+    {
+        string[] files = Directory.GetFiles(Application.persistentDataPath);
+        foreach (string path in files)
+        {
+            File.Delete(path);
+            Debug.Log("All save files have been deleted");
+        }
     }
 
     public void CacheSeats()

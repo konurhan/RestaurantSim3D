@@ -21,6 +21,8 @@ public class CheckIfShouldLeave : Node
             agent.SetDestination(RestaurantManager.Instance.RestaurantComponents.GetChild(2).position);
 
             RestaurantManager.Instance.satisfiedCustomers++;
+            CustomerArrivalManager.Instance.CheckForEndOfTheDay();
+
             nodeState = NodeState.SUCCEED;
             return nodeState;
         }

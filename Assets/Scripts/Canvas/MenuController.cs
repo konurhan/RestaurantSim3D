@@ -7,8 +7,9 @@ using UnityEngine.UI;
 
 public class MenuController : MonoBehaviour
 {
+    public static MenuController Instance; 
     public Transform saveLoadCanvas;
-    public Transform hireFireCanvas;
+    //public Transform hireFireCanvas;
     //private Transform saveTransform;
     //private Transform loadTransform;
 
@@ -17,23 +18,36 @@ public class MenuController : MonoBehaviour
     public Transform cooksPopUp;
     public Transform ingredientsPopUp;
 
+    private void Awake()
+    {
+        Instance = this;
+    }
     private void Start()
     {
         Invoke(nameof(SetUpMenuElements), 2f);
+        Invoke(nameof(SetupCooksPopup), 2f);
+        Invoke(nameof(SetupWaitersPopup), 2f);
     }
 
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.Escape)) saveLoadCanvas.gameObject.SetActive(!saveLoadCanvas.gameObject.activeSelf);//closing and opening the menu
-        if (Input.GetKeyDown(KeyCode.F)) hireFireCanvas.gameObject.SetActive(!hireFireCanvas.gameObject.activeSelf);
+        //if (Input.GetKeyDown(KeyCode.F)) hireFireCanvas.gameObject.SetActive(!hireFireCanvas.gameObject.activeSelf);
     }
 
     public void SetUpMenuElements()//should be called at the start after the menu is loaded from the save file
     {
         Transform recipeParent = menuPopUp.GetChild(0).GetChild(0);
         List<FoodData> fDataList = RestaurantManager.Instance.menu.GetComponent<Menu>().Foods;
+
+        for (int i = 0; i < recipeParent.childCount; i++)
+        {
+            recipeParent.GetChild(i).gameObject.SetActive(false);
+        }
+
         for (int i=0;i<fDataList.Count;i++)
         {
+            recipeParent.GetChild(i).gameObject.SetActive(true);
             FoodData food = fDataList[i];
             Transform recipe = recipeParent.GetChild(i);
             recipe.GetChild(2).GetChild(2).GetChild(0).GetComponent<TextMeshProUGUI>().text = food.price.ToString();
@@ -43,8 +57,15 @@ public class MenuController : MonoBehaviour
 
         recipeParent = menuPopUp.GetChild(1).GetChild(0);
         List<DrinkData> dDataList = RestaurantManager.Instance.menu.GetComponent<Menu>().Drinks;
+
+        for (int i = 0; i < recipeParent.childCount; i++)
+        {
+            recipeParent.GetChild(i).gameObject.SetActive(false);
+        }
+
         for (int i = 0; i < dDataList.Count; i++)
         {
+            recipeParent.GetChild(i).gameObject.SetActive(true);
             DrinkData drink = dDataList[i];
             Transform recipe = recipeParent.GetChild(i);
             recipe.GetChild(2).GetChild(2).GetChild(0).GetComponent<TextMeshProUGUI>().text = drink.price.ToString();
@@ -55,14 +76,108 @@ public class MenuController : MonoBehaviour
 
     public void IncreaseFoodPrice(int index)
     {
+        Transform recipe = menuPopUp.GetChild(0).GetChild(0).GetChild(index);
+        string prevPrice = recipe.GetChild(2).GetChild(2).GetChild(0).GetComponent<TextMeshProUGUI>().text;
+        recipe.GetChild(2).GetChild(2).GetChild(0).GetComponent<TextMeshProUGUI>().text = (int.Parse(prevPrice) + 1).ToString();
         RestaurantManager.Instance.menu.GetComponent<Menu>().Foods[index].Price++;
         RestaurantManager.Instance.popularity--;
     }
 
     public void DecreaseFoodPrice(int index)
     {
+        Transform recipe = menuPopUp.GetChild(0).GetChild(0).GetChild(index);
+        string prevPrice = recipe.GetChild(2).GetChild(2).GetChild(0).GetComponent<TextMeshProUGUI>().text;
+        recipe.GetChild(2).GetChild(2).GetChild(0).GetComponent<TextMeshProUGUI>().text = (int.Parse(prevPrice) - 1).ToString();
         RestaurantManager.Instance.menu.GetComponent<Menu>().Foods[index].Price--;
         RestaurantManager.Instance.popularity++;
+    }
+    public void IncreaseDrinkPrice(int index)
+    {
+        Transform recipe = menuPopUp.GetChild(1).GetChild(0).GetChild(index);
+        string prevPrice = recipe.GetChild(2).GetChild(2).GetChild(0).GetComponent<TextMeshProUGUI>().text;
+        recipe.GetChild(2).GetChild(2).GetChild(0).GetComponent<TextMeshProUGUI>().text = (int.Parse(prevPrice) + 1).ToString();
+        RestaurantManager.Instance.menu.GetComponent<Menu>().Drinks[index].Price++;
+        RestaurantManager.Instance.popularity--;
+    }
+
+    public void DecreaseDrinkPrice(int index)
+    {
+        Transform recipe = menuPopUp.GetChild(1).GetChild(0).GetChild(index);
+        string prevPrice = recipe.GetChild(2).GetChild(2).GetChild(0).GetComponent<TextMeshProUGUI>().text;
+        recipe.GetChild(2).GetChild(2).GetChild(0).GetComponent<TextMeshProUGUI>().text = (int.Parse(prevPrice) - 1).ToString();
+        RestaurantManager.Instance.menu.GetComponent<Menu>().Drinks[index].Price--;
+        RestaurantManager.Instance.popularity++;
+    }
+
+    public void LevelUpWaiter(int index)//manual level up upon button press, remove automatic level-up
+    {
+        Transform waitersParent = waitersPopUp.GetChild(0).GetChild(0);
+        Waiter waiter = RestaurantManager.Instance.waiters[index].GetComponent<Waiter>();
+        waiter.LevelUp();
+        //update values on popup
+        Transform slot = waitersParent.GetChild(index);
+        slot.GetChild(1).GetChild(2).GetChild(0).GetComponent<TextMeshProUGUI>().text = waiter.level.ToString();//level
+        slot.GetChild(2).GetChild(2).GetChild(0).GetComponent<TextMeshProUGUI>().text = waiter.wage.ToString();//wage
+        slot.GetChild(3).GetChild(2).GetChild(0).GetComponent<TextMeshProUGUI>().text = waiter.capacity.ToString();//capacity
+        slot.GetChild(4).GetChild(2).GetChild(0).GetComponent<TextMeshProUGUI>().text = waiter.speed.ToString();//speed
+    }
+
+    public void LevelUpCook(int index)
+    {
+        Transform cooksParent = cooksPopUp.GetChild(0).GetChild(0);
+        Cook cook = RestaurantManager.Instance.cooks[index].GetComponent<Cook>();
+        cook.LevelUp();
+        //update values on popup
+        Transform slot = cooksParent.GetChild(index);
+        slot.GetChild(1).GetChild(2).GetChild(0).GetComponent<TextMeshProUGUI>().text = cook.level.ToString();//level
+        slot.GetChild(2).GetChild(2).GetChild(0).GetComponent<TextMeshProUGUI>().text = cook.wage.ToString();//wage
+        slot.GetChild(3).GetChild(2).GetChild(0).GetComponent<TextMeshProUGUI>().text = cook.talent.ToString();//talent
+        slot.GetChild(4).GetChild(2).GetChild(0).GetComponent<TextMeshProUGUI>().text = cook.speed.ToString();//speed  
+    }
+
+    public void SetupWaitersPopup()
+    {
+        Transform waitersParent = waitersPopUp.GetChild(0).GetChild(0);
+        for (int i = 0; i < waitersParent.childCount; i++)
+        {
+            waitersParent.GetChild(i).gameObject.SetActive(false);
+        }
+        List<GameObject> waiters = RestaurantManager.Instance.waiters;
+        for (int i = 0; i < waiters.Count; i++)
+        {
+            waitersParent.GetChild(i).gameObject.SetActive(true);
+            Waiter waiter = waiters[i].GetComponent<Waiter>();
+            Transform slot = waitersParent.GetChild(i);
+            slot.GetChild(1).GetChild(2).GetChild(0).GetComponent<TextMeshProUGUI>().text = waiter.level.ToString();//level
+            slot.GetChild(2).GetChild(2).GetChild(0).GetComponent<TextMeshProUGUI>().text = waiter.wage.ToString();//wage
+            slot.GetChild(3).GetChild(2).GetChild(0).GetComponent<TextMeshProUGUI>().text = waiter.capacity.ToString();//capacity
+            slot.GetChild(4).GetChild(2).GetChild(0).GetComponent<TextMeshProUGUI>().text = waiter.speed.ToString();//speed
+        }
+    }
+
+    public void SetupCooksPopup()
+    {
+        Transform cooksParent = cooksPopUp.GetChild(0).GetChild(0);
+        for (int i = 0; i < cooksParent.childCount; i++)
+        {
+            cooksParent.GetChild(i).gameObject.SetActive(false);
+        }
+        List<GameObject> cooks = RestaurantManager.Instance.cooks;
+        for (int i = 0; i < cooks.Count; i++)
+        {
+            cooksParent.GetChild(i).gameObject.SetActive(true);
+            Cook cook = cooks[i].GetComponent<Cook>();
+            Transform slot = cooksParent.GetChild(i);
+            slot.GetChild(1).GetChild(2).GetChild(0).GetComponent<TextMeshProUGUI>().text = cook.level.ToString();//level
+            slot.GetChild(2).GetChild(2).GetChild(0).GetComponent<TextMeshProUGUI>().text = cook.wage.ToString();//wage
+            slot.GetChild(3).GetChild(2).GetChild(0).GetComponent<TextMeshProUGUI>().text = cook.talent.ToString();//talent
+            slot.GetChild(4).GetChild(2).GetChild(0).GetComponent<TextMeshProUGUI>().text = cook.speed.ToString();//speed
+        }
+    }
+
+    public void SetupIngredientsPopup()
+    {
+
     }
 
     public void OpenMenuPopup()
@@ -73,6 +188,20 @@ public class MenuController : MonoBehaviour
     {
         menuPopUp.gameObject.SetActive(false);
     }
-
-
+    public void OpenWaitersPopup()
+    {
+        waitersPopUp.gameObject.SetActive(true);
+    }
+    public void CloseWaitersPopup()
+    {
+        waitersPopUp.gameObject.SetActive(false);
+    }
+    public void OpenCooksPopup()
+    {
+        cooksPopUp.gameObject.SetActive(true);
+    }
+    public void CloseCooksPopup()
+    {
+        cooksPopUp.gameObject.SetActive(false);
+    }
 }

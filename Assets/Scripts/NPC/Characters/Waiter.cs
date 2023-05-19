@@ -36,7 +36,8 @@ public class Waiter : MonoBehaviour
     }
     public void LevelUp()
     {
-        if (CanLevelUp()) { level++; speed++; capacity++; wage++; }
+        if (CanLevelUp()) { level++; speed++; capacity++; wage++; Debug.Log("a waiter has leveled up"); }
+        else { Debug.Log("waiter do not have enough xp's to level up"); }
     }
 
     public void PickUpReadyOrders()//if idle and readyque is not empty
@@ -71,19 +72,19 @@ public class Waiter : MonoBehaviour
     public void ArrangeOnTrayObjects()
     {
         Transform centerOfTray = gameObject.transform.GetChild(0);
-        Debug.Log("center of tray local position is" + centerOfTray.localPosition);
+        //Debug.Log("center of tray local position is" + centerOfTray.localPosition);
         int onTrayOrdersCount = inventory.Count;
         int sliceCount = 0;
         float radius = 0.5f;
         foreach (KeyValuePair<GameObject, Customer> order in inventory)
         {
             float degree = 2*Mathf.PI * sliceCount / onTrayOrdersCount;
-            Debug.Log("degree of a slice is " + degree);
+            //Debug.Log("degree of a slice is " + degree);
             Vector3 offset = new Vector3(radius*Mathf.Sin(degree), 0, -radius * Mathf.Cos(degree));
-            Debug.Log("offset of slice " + (sliceCount + 1) + " is: " + offset);
+            //Debug.Log("offset of slice " + (sliceCount + 1) + " is: " + offset);
             order.Key.transform.localPosition = centerOfTray.localPosition + offset;
 
-            Debug.Log("localPos of slice "+(sliceCount+1)+" is: " + order.Key.transform.localPosition);
+            //Debug.Log("localPos of slice "+(sliceCount+1)+" is: " + order.Key.transform.localPosition);
             sliceCount++;
         }
     }
@@ -98,7 +99,7 @@ public class Waiter : MonoBehaviour
             customer.isWaitingToEatDrink = false;
             customer.isOrderArrived = true;
             GainExperience();
-            LevelUp();
+            //LevelUp();
         }
         
         else if(customer.isLeaving)

@@ -10,20 +10,24 @@ public class HireFireManager : MonoBehaviour
     public void HireGenericWaiter()
     {
         RestaurantManager.Instance.HireWaiter(tempWaiterData);
+        MenuController.Instance.SetupWaitersPopup();
     }
 
     public void HireGenericCook()
     {
         RestaurantManager.Instance.HireCook(tempCookData);
+        MenuController.Instance.SetupCooksPopup();
     }
 
-    public void FireGenericWaiter()
+    public void FireWaiterByIndex(int index)
     {
-        RestaurantManager.Instance.FireWaiterByStats(tempWaiterData);
+        RestaurantManager.Instance.FireWaiterByIndex(index);
+        MenuController.Instance.SetupWaitersPopup();
     }
 
-    public void FireGenericCook()
+    public void FireCookByIndex(int index)
     {
-        RestaurantManager.Instance.FireCookByStats(tempCookData);
+        RestaurantManager.Instance.FireCookByIndex(index);
+        MenuController.Instance.SetupCooksPopup();
     }
 }

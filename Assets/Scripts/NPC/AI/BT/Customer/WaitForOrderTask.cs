@@ -17,9 +17,10 @@ public class WaitForOrderTask : Node
             if (customer.Patience <= 0)
             {
                 customer.isLeaving = true;
-                nodeState = NodeState.FAILED;
-
                 RestaurantManager.Instance.angryCustomers++;
+                CustomerArrivalManager.Instance.CheckForEndOfTheDay();
+
+                nodeState = NodeState.FAILED;
                 return nodeState;
             }
             else

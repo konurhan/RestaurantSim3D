@@ -21,6 +21,14 @@ public class RecieveOrdersTask : Node
         {
             waiter.pickedUpOrders = true;
             waiter.PickUpReadyOrders();
+            if (waiter.inventory.Count == 0)
+            {
+                Debug.Log(waiter.gameObject.name + " has arrived to pick up ready orders but all orders are already picked up.");
+                waiter.pickedUpOrders = false;
+                waiter.delivering = false;
+                nodeState = NodeState.FAILED;
+                return nodeState;
+            }
             agent.SetDestination(waiter.inventory.First().Value.seatTransform.position);//setting the destination for the first customer
         }
         nodeState = NodeState.SUCCEED;
