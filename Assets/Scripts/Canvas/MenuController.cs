@@ -17,6 +17,7 @@ public class MenuController : MonoBehaviour
     public Transform waitersPopUp;
     public Transform cooksPopUp;
     public Transform ingredientsPopUp;
+    public Transform EndOfTheDayPopup;
 
     private void Awake()
     {
@@ -27,6 +28,8 @@ public class MenuController : MonoBehaviour
         Invoke(nameof(SetUpMenuElements), 2f);
         Invoke(nameof(SetupCooksPopup), 2f);
         Invoke(nameof(SetupWaitersPopup), 2f);
+        Invoke(nameof(SetupIngredientsPopup), 2f);
+        
     }
 
     private void Update()
@@ -81,6 +84,7 @@ public class MenuController : MonoBehaviour
         recipe.GetChild(2).GetChild(2).GetChild(0).GetComponent<TextMeshProUGUI>().text = (int.Parse(prevPrice) + 1).ToString();
         RestaurantManager.Instance.menu.GetComponent<Menu>().Foods[index].Price++;
         RestaurantManager.Instance.popularity--;
+        RestaurantManager.Instance.dailyPopularityChange--;
     }
 
     public void DecreaseFoodPrice(int index)
@@ -90,6 +94,7 @@ public class MenuController : MonoBehaviour
         recipe.GetChild(2).GetChild(2).GetChild(0).GetComponent<TextMeshProUGUI>().text = (int.Parse(prevPrice) - 1).ToString();
         RestaurantManager.Instance.menu.GetComponent<Menu>().Foods[index].Price--;
         RestaurantManager.Instance.popularity++;
+        RestaurantManager.Instance.dailyPopularityChange++;
     }
     public void IncreaseDrinkPrice(int index)
     {
@@ -98,6 +103,7 @@ public class MenuController : MonoBehaviour
         recipe.GetChild(2).GetChild(2).GetChild(0).GetComponent<TextMeshProUGUI>().text = (int.Parse(prevPrice) + 1).ToString();
         RestaurantManager.Instance.menu.GetComponent<Menu>().Drinks[index].Price++;
         RestaurantManager.Instance.popularity--;
+        RestaurantManager.Instance.dailyPopularityChange--;
     }
 
     public void DecreaseDrinkPrice(int index)
@@ -107,6 +113,7 @@ public class MenuController : MonoBehaviour
         recipe.GetChild(2).GetChild(2).GetChild(0).GetComponent<TextMeshProUGUI>().text = (int.Parse(prevPrice) - 1).ToString();
         RestaurantManager.Instance.menu.GetComponent<Menu>().Drinks[index].Price--;
         RestaurantManager.Instance.popularity++;
+        RestaurantManager.Instance.dailyPopularityChange++;
     }
 
     public void LevelUpWaiter(int index)//manual level up upon button press, remove automatic level-up
@@ -177,7 +184,50 @@ public class MenuController : MonoBehaviour
 
     public void SetupIngredientsPopup()
     {
+        Transform ingredientsParent = ingredientsPopUp.GetChild(0).GetChild(0);
+        for (int i = 0; i < ingredientsParent.childCount; i++)
+        {
+            ingredientsParent.GetChild(i).gameObject.SetActive(false);
+        }
+        Dictionary<KeyValuePair<string, int>, int> goods = Storage.instance.StoredGoods;
+        int cursor = 0;
+        foreach (KeyValuePair< KeyValuePair<string, int>, int> good in goods)
+        {
+            ingredientsParent.GetChild(cursor).gameObject.SetActive(true);
+            Transform slot = ingredientsParent.GetChild(cursor);
+            slot.GetChild(2).GetChild(2).GetChild(0).GetComponent<TextMeshProUGUI>().text = good.Key.Value.ToString();//price
+            slot.GetChild(3).GetChild(2).GetChild(0).GetComponent<TextMeshProUGUI>().text = good.Value.ToString();//amount
+            slot.GetChild(4).GetChild(1).GetComponent<TextMeshProUGUI>().text = good.Key.Key;//name
 
+            cursor++;
+            //image here
+        }
+    }
+
+    public void BuyIngredientByIndex(int index)
+    {
+        Transform ingredientsParent = ingredientsPopUp.GetChild(0).GetChild(0);
+        Transform ingredient = ingredientsParent.GetChild(index);
+        string name = ingredient.GetChild(4).GetChild(1).GetComponent<TextMeshProUGUI>().text;
+        int price = int.Parse(ingredient.GetChild(2).GetChild(2).GetChild(0).GetComponent<TextMeshProUGUI>().text);
+
+        RestaurantManager.Instance.BuyIngredient(new KeyValuePair<string, int>(name,price));
+        int prevAmount = int.Parse(ingredient.GetChild(3).GetChild(2).GetChild(0).GetComponent<TextMeshProUGUI>().text);
+        prevAmount++;
+        ingredient.GetChild(3).GetChild(2).GetChild(0).GetComponent<TextMeshProUGUI>().text = prevAmount.ToString();
+    }
+
+    public void RemoveIngredientByIndex(int index)
+    {
+        Transform ingredientsParent = ingredientsPopUp.GetChild(0).GetChild(0);
+        Transform ingredient = ingredientsParent.GetChild(index);
+        string name = ingredient.GetChild(4).GetChild(1).GetComponent<TextMeshProUGUI>().text;
+        int price = int.Parse(ingredient.GetChild(2).GetChild(2).GetChild(0).GetComponent<TextMeshProUGUI>().text);
+
+        RestaurantManager.Instance.ThrowIngredient(new KeyValuePair<string, int>(name, price));
+        int prevAmount = int.Parse(ingredient.GetChild(3).GetChild(2).GetChild(0).GetComponent<TextMeshProUGUI>().text);
+        prevAmount--;
+        ingredient.GetChild(3).GetChild(2).GetChild(0).GetComponent<TextMeshProUGUI>().text = prevAmount.ToString();
     }
 
     public void OpenMenuPopup()
@@ -203,5 +253,15 @@ public class MenuController : MonoBehaviour
     public void CloseCooksPopup()
     {
         cooksPopUp.gameObject.SetActive(false);
+    }
+
+    public void OpenIngredientsPopup()
+    {
+        ingredientsPopUp.gameObject.SetActive(true);
+        SetupIngredientsPopup();
+    }
+    public void CloseIngredientsPopup()
+    {
+        ingredientsPopUp.gameObject.SetActive(false);
     }
 }

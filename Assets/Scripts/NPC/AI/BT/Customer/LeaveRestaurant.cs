@@ -26,6 +26,8 @@ public class LeaveRestaurant : Node
                     {
                         customer.seatTransform = null;
                         customer.Leave();
+                        Debug.Log("customer leave is just called");
+                        CustomerArrivalManager.Instance.CheckForEndOfTheDay();
                     }
                     nodeState = NodeState.SUCCEED;
                     return nodeState;

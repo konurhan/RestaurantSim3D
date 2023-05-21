@@ -24,10 +24,29 @@ public class CurrentCustomerCheck : Node
         }
         else if(waiter.currentCustomer == null && RestaurantManager.Instance.orderRequestQueue.Count > 0)
         {
-            waiter.currentCustomer = RestaurantManager.Instance.orderRequestQueue.Dequeue().GetComponent<Customer>();
-            waiter.gameObject.GetComponent<NavMeshAgent>().SetDestination(waiter.currentCustomer.seatTransform.position);
-            nodeState = NodeState.SUCCEED;
-            return nodeState;
+            while(waiter.currentCustomer==null && RestaurantManager.Instance.orderRequestQueue.Count > 0)
+            {
+                GameObject customer = RestaurantManager.Instance.orderRequestQueue.Dequeue();
+                if (customer == null)//check if dequed object is null
+                {
+                    waiter.currentCustomer = null;
+                }
+                else
+                {
+                    waiter.currentCustomer = customer.GetComponent<Customer>();
+                }
+            }
+            if(waiter.currentCustomer!= null)
+            {
+                waiter.gameObject.GetComponent<NavMeshAgent>().SetDestination(waiter.currentCustomer.seatTransform.position);
+                nodeState = NodeState.SUCCEED;
+                return nodeState;
+            }
+            else
+            {
+                nodeState = NodeState.FAILED;
+                return nodeState;
+            }
         }
         else
         {

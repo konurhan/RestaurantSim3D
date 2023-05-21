@@ -10,7 +10,7 @@ public class GoToSeatTask : Node
     public GoToSeatTask(Customer customer)
     {
         this.customer = customer;
-        Debug.Log("agent gameObject name: " + customer.transform.gameObject.name);
+        //Debug.Log("agent gameObject name: " + customer.transform.gameObject.name);
         agent = customer.gameObject.GetComponent<NavMeshAgent>();
     }
 

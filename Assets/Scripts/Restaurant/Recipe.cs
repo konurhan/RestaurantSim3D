@@ -17,6 +17,8 @@ public interface IRecipe
     {
         Price = newPrice;
     }
+
+    public void DestroyObject();
 }
 
 public interface IRecipeData

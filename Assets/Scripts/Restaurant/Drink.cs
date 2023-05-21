@@ -59,4 +59,9 @@ public class Drink : MonoBehaviour, IRecipe
         thirst = data.Thirst;
         hunger = data.Hunger;
     }
+
+    public void DestroyObject()
+    {
+        Destroy(gameObject);
+    }
 }

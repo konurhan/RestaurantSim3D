@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 
@@ -15,6 +16,9 @@ public class RestaurantManager : MonoBehaviour
     public int satisfiedCustomers;//reset at the end of the day
     public int angryCustomers;//reset at the end of the day
     public int deniedCustomers;//reset at the end of the day
+    public int dailySpendings;//reset at the end of the day
+    public int dailyEarnings;//reset at the end of the day
+    public int dailyPopularityChange;//reset at the end of the day
 
     public Transform RestaurantComponents;
     public Transform InGameUIComponents;
@@ -62,6 +66,31 @@ public class RestaurantManager : MonoBehaviour
     {
         UITopBarUpdate();
     }
+    
+    public void DailyReset()
+    {
+        satisfiedCustomers = 0; 
+        angryCustomers = 0;
+        deniedCustomers = 0;
+        dailySpendings = 0;
+        dailyEarnings = 0;
+        dailyPopularityChange = 0;
+    }
+
+    public void PayWages()
+    {
+        foreach (GameObject waiter in waiters) 
+        {
+            money -= waiter.GetComponent<Waiter>().wage;
+            dailySpendings += waiter.GetComponent<Waiter>().wage;
+        }
+
+        foreach (GameObject cook in cooks)
+        {
+            money -= cook.GetComponent<Cook>().wage;
+            dailySpendings += cook.GetComponent<Cook>().wage;
+        }
+    }
 
     public void IncreaseCapacity()
     {
@@ -94,7 +123,7 @@ public class RestaurantManager : MonoBehaviour
 
     public void FireWaiterByStats(WaiterData firedWaiterData)
     {
-        foreach (GameObject waiterObject in waiters)
+        foreach (GameObject waiterObject in waiters.ToList())
         {
             if (waiterObject.GetComponent<Waiter>().CompareWithData(firedWaiterData))
             {
@@ -121,7 +150,7 @@ public class RestaurantManager : MonoBehaviour
 
     public void FireCookByStats(CookData firedCookData)
     {
-        foreach (GameObject cookObject in cooks)
+        foreach (GameObject cookObject in cooks.ToList())
         {
             if (cookObject.GetComponent<Cook>().CompareWithData(firedCookData))
             {
@@ -148,9 +177,12 @@ public class RestaurantManager : MonoBehaviour
     }
 
     #endregion
+
     public void BuyIngredient(KeyValuePair<string, int> newIngredient)
     {
         Storage.instance.AddIngredient(newIngredient);
+        money -= newIngredient.Value;
+        dailySpendings += newIngredient.Value;
     }
 
     public void ThrowIngredient(KeyValuePair<string, int> newIngredient)

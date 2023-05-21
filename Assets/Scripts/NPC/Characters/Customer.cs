@@ -55,36 +55,19 @@ public class Customer : MonoBehaviour
     {
         Destroy(inventoryFoodDrink);
     }
-    /*public void Consume(GameObject inventoryFoodDrink)//make this a coroutine
-    {
-        IRecipe order;
-        if (inventoryFoodDrink.GetComponent<Food>()) order = inventoryFoodDrink.GetComponent<Food>();//if food is delivered
-        else order = inventoryFoodDrink.GetComponent<Drink>();//if drink is delivered
-
-        hunger += order.Hunger;
-        thirst += order.Thirst;
-
-        if (hunger > 100) hunger = 100;
-        if (thirst > 100) thirst = 100;
-
-        satisfactionScore = order.Quality;
-        serviceScore = patience;
-
-        //after consuming
-        inventory.Remove(inventoryFoodDrink);
-        Destroy(inventoryFoodDrink);
-    }*/
 
     public void TakeOnOrder(GameObject order)
     {
         inventory.Add(order);
         RestaurantManager.Instance.money += order.GetComponent<IRecipe>().Price;//customer makes the payment
+        RestaurantManager.Instance.dailyEarnings += order.GetComponent<IRecipe>().Price;
     }
 
     public void RateService()
     {
         float score = satisfactionScore + serviceScore;
         RestaurantManager.Instance.popularity += score;
+        RestaurantManager.Instance.dailyPopularityChange += (int)score;
     }
 
     public void Leave()

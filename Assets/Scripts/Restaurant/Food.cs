@@ -47,6 +47,12 @@ public class Food : MonoBehaviour, IRecipe
         get { return orderer; }
         set { orderer = value; }
     }
+
+    public void DestroyObject()
+    {
+        Destroy(gameObject);
+    }
+
     public void SetPrice(int newPrice)
     {
         price = newPrice;

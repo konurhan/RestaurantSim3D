@@ -21,6 +21,27 @@ public class RecieveOrdersTask : Node
         {
             waiter.pickedUpOrders = true;
             waiter.PickUpReadyOrders();
+
+            /*foreach(KeyValuePair<GameObject,Customer> pair in waiter.inventory)
+            {
+                if(pair.Value == null)
+                {
+                    Debug.Log("waiter has pickud-up an order for a customer who has already left");
+                    waiter.inventory.Remove(pair.Key);
+                    pair.Key.GetComponent<IRecipe>().DestroyObject();
+                }
+            }*/
+
+            foreach (GameObject ord in waiter.inventory.Keys.ToList())
+            {
+                if (waiter.inventory[ord] == null)
+                {
+                    Debug.Log("waiter has pickud-up an order for a customer who has already left");
+                    waiter.inventory.Remove(ord);
+                    ord.GetComponent<IRecipe>().DestroyObject();
+                }
+            }
+
             if (waiter.inventory.Count == 0)
             {
                 Debug.Log(waiter.gameObject.name + " has arrived to pick up ready orders but all orders are already picked up.");
@@ -29,7 +50,9 @@ public class RecieveOrdersTask : Node
                 nodeState = NodeState.FAILED;
                 return nodeState;
             }
-            agent.SetDestination(waiter.inventory.First().Value.seatTransform.position);//setting the destination for the first customer
+
+            KeyValuePair<GameObject, Customer> order = waiter.inventory.First();
+            agent.SetDestination(order.Value.seatTransform.position);//setting the destination for the first customer
         }
         nodeState = NodeState.SUCCEED;
         return nodeState;

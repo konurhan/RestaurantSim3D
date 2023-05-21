@@ -20,8 +20,13 @@ public class CheckIfShouldLeave : Node
             customer.seatTransform.gameObject.GetComponent<SeatController>().LeaveTheSeat();//test if this operation is succesful
             agent.SetDestination(RestaurantManager.Instance.RestaurantComponents.GetChild(2).position);
 
-            RestaurantManager.Instance.satisfiedCustomers++;
-            CustomerArrivalManager.Instance.CheckForEndOfTheDay();
+            if (!customer.isLeaving)
+            {
+                customer.isLeaving = true;
+                RestaurantManager.Instance.satisfiedCustomers++;
+                Debug.Log("Customer is leaving satisfied");//might get caled more than once
+            }
+            //CustomerArrivalManager.Instance.CheckForEndOfTheDay();
 
             nodeState = NodeState.SUCCEED;
             return nodeState;
