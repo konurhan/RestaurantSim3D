@@ -6,9 +6,11 @@ using UnityEngine.AI;
 public class readyOrdersCheck : Node
 {
     Waiter waiter;
+    Animator animator;
     public readyOrdersCheck(Waiter waiter)
     {
         this.waiter = waiter;
+        animator = waiter.gameObject.GetComponent<Animator>();
     }
     public override NodeState Evaluate()
     {
@@ -21,6 +23,7 @@ public class readyOrdersCheck : Node
         {
             waiter.delivering = true;
             waiter.gameObject.GetComponent<NavMeshAgent>().SetDestination(RestaurantManager.Instance.RestaurantComponents.GetChild(5).transform.position);//send waiter to kitchen to fetch the order
+            animator.SetBool("isWalking", true);
             nodeState = NodeState.SUCCEED;
             return nodeState;
         }

@@ -7,11 +7,13 @@ public class GoToSeatTask : Node
 {
     Customer customer;
     NavMeshAgent agent;
+    Animator animator;
     public GoToSeatTask(Customer customer)
     {
         this.customer = customer;
         //Debug.Log("agent gameObject name: " + customer.transform.gameObject.name);
         agent = customer.gameObject.GetComponent<NavMeshAgent>();
+        animator = customer.gameObject.GetComponent<Animator>();
     }
 
     public override NodeState Evaluate()
@@ -22,6 +24,8 @@ public class GoToSeatTask : Node
             {
                 if (!agent.hasPath || agent.velocity.sqrMagnitude == 0f)
                 {
+                    animator.SetBool("isSitting", true);
+
                     Debug.Log("Customer arrived to his seat");
                     customer.isSeated = true;
                     nodeState = NodeState.SUCCEED;

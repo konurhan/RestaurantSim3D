@@ -7,10 +7,12 @@ public class CarryOrdersToReadyCounterTask : Node
 {
     Cook cook;
     NavMeshAgent agent;
+    Animator animator;
     public CarryOrdersToReadyCounterTask(Cook cook)
     {
         this.cook = cook;
         agent = cook.gameObject.GetComponent<NavMeshAgent>();
+        animator = cook.gameObject.GetComponent<Animator>();
     }
     public override NodeState Evaluate()
     {
@@ -20,6 +22,7 @@ public class CarryOrdersToReadyCounterTask : Node
             {
                 if (!agent.hasPath || agent.velocity.sqrMagnitude == 0f)
                 {
+                    animator.SetBool("isCarrying", false);
                     Debug.Log("Cook arrived to readycounter");
                     RestaurantManager.Instance.AddObjectToReadyCounter(cook.preparedRecipe);
                     RestaurantManager.Instance.readyQueue.Enqueue(new KeyValuePair<GameObject, Customer>(cook.preparedRecipe, cook.currentOrder.orderer));

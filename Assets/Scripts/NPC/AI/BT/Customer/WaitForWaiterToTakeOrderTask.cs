@@ -7,10 +7,12 @@ public class WaitForWaiterToTakeOrderTask : Node
 {
     Customer customer;
     NavMeshAgent agent;
+    Animator animator;
     public WaitForWaiterToTakeOrderTask(Customer customer)
     {
         this.customer = customer;
         agent = customer.GetComponent<NavMeshAgent>();
+        animator = customer.gameObject.GetComponent<Animator>();
     }
     public override NodeState Evaluate()//implement after A*
     {
@@ -27,7 +29,9 @@ public class WaitForWaiterToTakeOrderTask : Node
                 {
                     customer.isLeaving = true;
                     RestaurantManager.Instance.angryCustomers++;
-                    Debug.Log("Customer is leaving angry, order was late");
+                    Debug.Log("Customer is leaving angry, couldn't make the order");
+
+                    animator.SetBool("isSitting", false);
                 }
 
                 nodeState = NodeState.FAILED;

@@ -7,10 +7,12 @@ public class CheckIfShouldLeave : Node
 {
     Customer customer;
     NavMeshAgent agent;
+    Animator animator;
     public CheckIfShouldLeave(Customer customer)
     {
         this.customer = customer;
         agent = customer.GetComponent<NavMeshAgent>();
+        animator = customer.gameObject.GetComponent<Animator>();
     }
 
     public override NodeState Evaluate()
@@ -25,6 +27,8 @@ public class CheckIfShouldLeave : Node
                 customer.isLeaving = true;
                 RestaurantManager.Instance.satisfiedCustomers++;
                 Debug.Log("Customer is leaving satisfied");//might get caled more than once
+
+                animator.SetBool("isSitting", false);
             }
             //CustomerArrivalManager.Instance.CheckForEndOfTheDay();
 

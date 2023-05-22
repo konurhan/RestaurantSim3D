@@ -9,10 +9,12 @@ public class RecieveOrdersTask : Node
 {
     Waiter waiter;
     NavMeshAgent agent;
+    Animator animator;
     public RecieveOrdersTask(Waiter waiter)
     {
         this.waiter = waiter;
         agent = waiter.GetComponent<NavMeshAgent>();
+        animator = waiter.gameObject.GetComponent<Animator>();
     }
 
     public override NodeState Evaluate()//this method doesn't work properly, if once succeded it always return succeed
@@ -21,16 +23,6 @@ public class RecieveOrdersTask : Node
         {
             waiter.pickedUpOrders = true;
             waiter.PickUpReadyOrders();
-
-            /*foreach(KeyValuePair<GameObject,Customer> pair in waiter.inventory)
-            {
-                if(pair.Value == null)
-                {
-                    Debug.Log("waiter has pickud-up an order for a customer who has already left");
-                    waiter.inventory.Remove(pair.Key);
-                    pair.Key.GetComponent<IRecipe>().DestroyObject();
-                }
-            }*/
 
             foreach (GameObject ord in waiter.inventory.Keys.ToList())
             {
@@ -53,6 +45,7 @@ public class RecieveOrdersTask : Node
 
             KeyValuePair<GameObject, Customer> order = waiter.inventory.First();
             agent.SetDestination(order.Value.seatTransform.position);//setting the destination for the first customer
+            animator.SetBool("isWalking", true);
         }
         nodeState = NodeState.SUCCEED;
         return nodeState;

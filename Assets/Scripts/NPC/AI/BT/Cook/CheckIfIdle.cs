@@ -6,9 +6,11 @@ using UnityEngine.AI;
 public class CheckIfIdle : Node
 {
     Cook cook;
+    Animator animator;
     public CheckIfIdle(Cook cook)
     {
         this.cook = cook;
+        animator = cook.gameObject.GetComponent<Animator>();
     }
     public override NodeState Evaluate()
     {
@@ -22,6 +24,7 @@ public class CheckIfIdle : Node
                     cook.currentOrder = RestaurantManager.Instance.orderQueue.Dequeue();
                     Transform kitchenCounter = RestaurantManager.Instance.RestaurantComponents.GetChild(3).gameObject.transform;
                     cook.gameObject.GetComponent<NavMeshAgent>().SetDestination(kitchenCounter.position);
+                    animator.SetBool("isWalking", true);
                     nodeState = NodeState.SUCCEED;
                     return nodeState;
                 }

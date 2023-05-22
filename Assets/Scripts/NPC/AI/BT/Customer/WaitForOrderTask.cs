@@ -7,10 +7,12 @@ public class WaitForOrderTask : Node
 {
     Customer customer;
     NavMeshAgent agent;
+    Animator animator;
     public WaitForOrderTask(Customer customer)
     {
         this.customer = customer;
         agent = customer.GetComponent<NavMeshAgent>();
+        animator = customer.gameObject.GetComponent<Animator>();
     }
     public override NodeState Evaluate()
     {
@@ -26,7 +28,9 @@ public class WaitForOrderTask : Node
                 {
                     customer.isLeaving = true;
                     RestaurantManager.Instance.angryCustomers++;
-                    Debug.Log("Customer is leaving angry, couldn't make the order");//called more than once
+                    Debug.Log("Customer is leaving angry, order was late");//called more than once
+
+                    animator.SetBool("isSitting", false);
                 }
                 //CustomerArrivalManager.Instance.CheckForEndOfTheDay();
 

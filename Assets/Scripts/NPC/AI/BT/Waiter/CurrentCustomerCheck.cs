@@ -6,9 +6,11 @@ using UnityEngine.AI;
 public class CurrentCustomerCheck : Node
 {
     Waiter waiter;
+    Animator animator;
     public CurrentCustomerCheck(Waiter waiter)
     {
         this.waiter = waiter;
+        animator = waiter.gameObject.GetComponent<Animator>();
     }
     public override NodeState Evaluate()
     {
@@ -38,6 +40,7 @@ public class CurrentCustomerCheck : Node
             }
             if(waiter.currentCustomer!= null)
             {
+                animator.SetBool("isWalking", true);
                 waiter.gameObject.GetComponent<NavMeshAgent>().SetDestination(waiter.currentCustomer.seatTransform.position);
                 nodeState = NodeState.SUCCEED;
                 return nodeState;

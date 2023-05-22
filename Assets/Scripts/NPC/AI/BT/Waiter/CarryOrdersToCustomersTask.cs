@@ -8,10 +8,12 @@ public class CarryOrdersToCustomersTask : Node
 {
     private Waiter waiter;
     private NavMeshAgent agent;
+    Animator animator;
     public CarryOrdersToCustomersTask(Waiter waiter)
     {
         this.waiter = waiter;
         agent = waiter.GetComponent<NavMeshAgent>();
+        animator = waiter.gameObject.GetComponent<Animator>();
     }
 
     public override NodeState Evaluate()
@@ -22,6 +24,7 @@ public class CarryOrdersToCustomersTask : Node
             {
                 if (!agent.hasPath || agent.velocity.sqrMagnitude == 0f)
                 {
+                    animator.SetBool("isWalking", false);
                     Debug.Log("waiter arrived to a customer");
                     KeyValuePair<GameObject, Customer> prevOrder = waiter.inventory.First();//hata veriyor, inventory boş
                     waiter.DeliverOrder(prevOrder.Key, prevOrder.Value);
@@ -32,6 +35,7 @@ public class CarryOrdersToCustomersTask : Node
                         KeyValuePair<GameObject, Customer> order = waiter.inventory.First();
                         if (order.Value != null)
                         {
+                            animator.SetBool("isWalking", true);
                             agent.SetDestination(order.Value.seatTransform.position);
                             break;
                         }
@@ -49,6 +53,7 @@ public class CarryOrdersToCustomersTask : Node
                     }
                     else//delivered all orders in the inventory, inventory is empty, no new destinations
                     {
+                        animator.SetBool("isWalking", false);
                         waiter.pickedUpOrders = false;
                         waiter.delivering = false;
                         nodeState = NodeState.SUCCEED;

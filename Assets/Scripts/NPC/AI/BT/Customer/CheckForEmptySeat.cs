@@ -6,9 +6,11 @@ using UnityEngine.AI;
 public class CheckForEmptySeat : Node
 {
     Customer customer;
+    Animator animator;
     public CheckForEmptySeat(Customer customer)
     {
         this.customer = customer;
+        animator = customer.gameObject.GetComponent<Animator>();
     }
 
     public override NodeState Evaluate()
@@ -26,6 +28,7 @@ public class CheckForEmptySeat : Node
                 seat.GetComponent<SeatController>().SetOccupant(customer.gameObject);
                 customer.seatTransform = seat.transform;
                 customer.gameObject.GetComponent<NavMeshAgent>().SetDestination(seat.transform.position);
+                animator.SetBool("isWalking",true);
                 nodeState = NodeState.SUCCEED;
                 return nodeState;
             }

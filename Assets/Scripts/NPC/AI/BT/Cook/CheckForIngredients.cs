@@ -5,9 +5,11 @@ using UnityEngine;
 public class CheckForIngredients : Node
 {
     Cook cook;
+    Animator animator;
     public CheckForIngredients(Cook cook)
     {
         this.cook = cook;
+        animator = cook.gameObject.GetComponent<Animator>();
     }
 
     public override NodeState Evaluate()
@@ -25,6 +27,8 @@ public class CheckForIngredients : Node
             }
             if (cook.IsEnoughInventory(cook.currentOrder.data))
             {
+                //animator.SetBool("isWalking", false);
+                animator.SetBool("isCooking", true);
                 cook.cooking = true;
                 cook.preperationTime = (int)(1000 / cook.speed);
                 nodeState = NodeState.SUCCEED;

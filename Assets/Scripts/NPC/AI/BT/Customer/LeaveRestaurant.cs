@@ -7,10 +7,12 @@ public class LeaveRestaurant : Node
 {
     Customer customer;
     NavMeshAgent agent;
+    Animator animator;
     public LeaveRestaurant(Customer customer)
     {
         this.customer = customer;
         agent = customer.GetComponent<NavMeshAgent>();
+        animator = customer.gameObject.GetComponent<Animator>();
     }
     public override NodeState Evaluate()
     {
@@ -22,6 +24,7 @@ public class LeaveRestaurant : Node
             {
                 if (!agent.hasPath || agent.velocity.sqrMagnitude == 0f)
                 {
+                    animator.SetBool("isWalking", false);
                     if(customer.seatTransform != null)
                     {
                         customer.seatTransform = null;
