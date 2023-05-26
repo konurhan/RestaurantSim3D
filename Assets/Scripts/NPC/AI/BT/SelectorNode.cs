@@ -4,8 +4,6 @@ using UnityEngine;
 
 public class SelectorNode : Node
 {
-
-    //protected List<Node> children;
     public override NodeState Evaluate()
     {
         foreach (Node node in children)
@@ -25,11 +23,9 @@ public class SelectorNode : Node
         nodeState = NodeState.FAILED;
         return nodeState;
     }
-
     public SelectorNode(List<Node> children)
     {
         this.children = children;
         ConnectChildren();
     }
-
 }

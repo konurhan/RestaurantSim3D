@@ -9,16 +9,12 @@ public enum NodeState
     FAILED,
     SUCCEED
 }
-
 public abstract class Node
 {
     protected NodeState nodeState;
-
     protected Node parent;
-
     protected List<Node> children;
     public abstract NodeState Evaluate();
-
     protected void ConnectChildren()
     {
         foreach (Node childNode in children)
@@ -26,5 +22,4 @@ public abstract class Node
             childNode.parent = this;
         }
     }
-
 }

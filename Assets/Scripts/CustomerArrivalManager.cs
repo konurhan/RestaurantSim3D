@@ -42,7 +42,7 @@ public class CustomerArrivalManager : MonoBehaviour
     public void CheckForEndOfTheDay()
     {
         Debug.Log("CheckForEndOfTheDay method is called");
-        if (RestaurantManager.Instance.angryCustomers + RestaurantManager.Instance.satisfiedCustomers + RestaurantManager.Instance.deniedCustomers == dailyCount)
+        if (RestaurantManager.Instance.angryCustomers + RestaurantManager.Instance.satisfiedCustomers + RestaurantManager.Instance.deniedCustomers >= dailyCount)
         {
             Debug.Log("EndOfTheDayOperations method is called");
             Debug.Log(RestaurantManager.Instance.deniedCustomers + " customers are denied, "+ RestaurantManager.Instance.satisfiedCustomers + " customers are satisfied, "+ RestaurantManager.Instance.angryCustomers + " customers are angry.");

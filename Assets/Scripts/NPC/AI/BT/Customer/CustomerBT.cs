@@ -6,25 +6,10 @@ using UnityEngine;
 public class CustomerBT : BehaviorTree
 {
     public Customer NPCController;
-    new private void Start()//hide the start method of parent class
+    new private void Start()
     {
-        if(gameObject.GetComponent<Customer>() != null)
-        {
-            Debug.Log("customer script is found.");
-            NPCController = gameObject.GetComponent<Customer>();
-        }
-        else
-        {
-            Debug.Log("no customer script could be found.");
-        }
+        NPCController = gameObject.GetComponent<Customer>();
         base.Start();
-    }
-
-    new private void Update()
-    {
-        base.Update();
-        /*Debug.Log("customer gameObject name: " + gameObject.name);
-        NPCController = gameObject.GetComponent<Customer>();*/
     }
     public override Node Setup()
     {
@@ -34,13 +19,12 @@ public class CustomerBT : BehaviorTree
             new SequenceNode(new List<Node>{
                 new InverterNode(new List<Node>
                 {
-                    new CheckIfSeated(NPCController)//if not seated continue with the taking seat process
+                    new CheckIfSeated(NPCController)
                 }),
                 new CheckForEmptySeat(NPCController),
                 new GoToSeatTask(NPCController),
             }),
-
-            //customer is in restaurant sequence
+            //customer is getting served sequence
             new SequenceNode(new List<Node>
             {
                 new CheckIfSeated(NPCController),
@@ -50,34 +34,29 @@ public class CustomerBT : BehaviorTree
                     {
                         new InverterNode(new List<Node>
                         {
-                            new CheckIfOrdered(NPCController)//if already ordered continue with waiting task
+                            new CheckIfOrdered(NPCController)
                         }),
-                        
-                        new CallWaiterTask(NPCController),//calls waiter if not already called
+                        new CallWaiterTask(NPCController),
                         new WaitForWaiterToTakeOrderTask(NPCController),
                         new MakeAnOrderTask(NPCController)
                     }),
                     new SequenceNode(new List<Node>
                     {
-                        new CheckIfOrdered(NPCController),//if not ordered leave
-                        new WaitForOrderTask(NPCController),//failure of this node directly sends us to leaving sequence
+                        new CheckIfOrdered(NPCController),
+                        new WaitForOrderTask(NPCController),
                         new ConsumeTask(NPCController),
-                        new InverterNode(new List<Node>//if customer is satisfied, inverted
+                        new InverterNode(new List<Node>
                         {
-                            new CheckIfShouldLeave(NPCController)//invert to make sequence fail if leave check succeeds, so that we go into leaving
+                            new CheckIfShouldLeave(NPCController)
                         })
                     })
-                }),
-                
+                })
             }),
-
             //leaving sequence
             new SequenceNode(new List<Node>
             {
                 new LeaveRestaurant(NPCController),
-                
             })
-
         });
         return root;
     }

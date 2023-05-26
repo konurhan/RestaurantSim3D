@@ -23,7 +23,6 @@ public class SequenceNode : Node
         nodeState = NodeState.SUCCEED;
         return nodeState;
     }
-
     public SequenceNode(List<Node> children)
     {
         this.children = children;

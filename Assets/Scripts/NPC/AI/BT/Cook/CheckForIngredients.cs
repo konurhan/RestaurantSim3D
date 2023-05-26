@@ -37,6 +37,7 @@ public class CheckForIngredients : Node
             else
             {
                 Debug.Log("Inventory is not enough for recipe");
+                RestaurantManager.Instance.orderQueue.Enqueue(cook.currentOrder);//test if this works
                 cook.currentOrder = null;
                 nodeState = NodeState.FAILED;
                 return nodeState;

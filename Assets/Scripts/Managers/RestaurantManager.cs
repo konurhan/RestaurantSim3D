@@ -18,7 +18,7 @@ public class RestaurantManager : MonoBehaviour
     public int deniedCustomers;//reset at the end of the day
     public int dailySpendings;//reset at the end of the day
     public int dailyEarnings;//reset at the end of the day
-    public int dailyPopularityChange;//reset at the end of the day
+    public float dailyPopularityChange;//reset at the end of the day
 
     public Transform RestaurantComponents;
     public Transform InGameUIComponents;

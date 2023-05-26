@@ -23,6 +23,7 @@ public class readyOrdersCheck : Node
         {
             waiter.delivering = true;
             waiter.gameObject.GetComponent<NavMeshAgent>().SetDestination(RestaurantManager.Instance.RestaurantComponents.GetChild(5).transform.position);//send waiter to kitchen to fetch the order
+            Debug.Log("Ready order counter position is "+ RestaurantManager.Instance.RestaurantComponents.GetChild(5).transform.position);
             animator.SetBool("isWalking", true);
             nodeState = NodeState.SUCCEED;
             return nodeState;

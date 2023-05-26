@@ -15,15 +15,6 @@ public abstract class BehaviorTree : MonoBehaviour
 
     protected void Update()
     {
-        /*if (waitTime < 100)
-        {
-            waitTime++;
-        }
-        else
-        {
-            waitTime = 0;
-            if (root != null) root.Evaluate();
-        }*/
         if (root != null) root.Evaluate();
     }
 

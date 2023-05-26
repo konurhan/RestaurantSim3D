@@ -66,8 +66,8 @@ public class Customer : MonoBehaviour
     public void RateService()
     {
         float score = satisfactionScore + serviceScore;
-        RestaurantManager.Instance.popularity += score;
-        RestaurantManager.Instance.dailyPopularityChange += (int)score;
+        RestaurantManager.Instance.popularity += score/400;
+        RestaurantManager.Instance.dailyPopularityChange += score/400;
     }
 
     public void Leave()

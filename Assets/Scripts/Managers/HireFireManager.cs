@@ -4,17 +4,25 @@ using UnityEngine;
 
 public class HireFireManager : MonoBehaviour
 {
-    WaiterData tempWaiterData = new WaiterData(5, 10, 10, 10, 10);
-    CookData tempCookData = new CookData(5, 10, 10, 10, 10);
+    
+    
 
     public void HireGenericWaiter()
     {
+        int speed = (int)Random.Range(1, 3);
+        int capacity = (int)Random.Range(1, 3);
+        int wage = (int)Random.Range(1, 5);
+        WaiterData tempWaiterData = new WaiterData(0, 1, speed, capacity, wage);
         RestaurantManager.Instance.HireWaiter(tempWaiterData);
         MenuController.Instance.SetupWaitersPopup();
     }
 
     public void HireGenericCook()
     {
+        int speed = (int)Random.Range(1, 3);
+        int talent = (int)Random.Range(1, 3);
+        int wage = (int)Random.Range(1, 5);
+        CookData tempCookData = new CookData(0, 1, speed, talent, wage);
         RestaurantManager.Instance.HireCook(tempCookData);
         MenuController.Instance.SetupCooksPopup();
     }

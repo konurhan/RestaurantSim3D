@@ -843,9 +843,9 @@ GameObject:
   m_Component:
   - component: {fileID: 4639196918741145270}
   - component: {fileID: 1621737664004410572}
+  - component: {fileID: 1621737664004410573}
   - component: {fileID: 1621737664004410579}
   - component: {fileID: 1621737664004410578}
-  - component: {fileID: 1621737664004410573}
   m_Layer: 0
   m_Name: Customer
   m_TagString: Untagged
@@ -890,6 +890,28 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
+--- !u!195 &1621737664004410573
+NavMeshAgent:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5416262071162981388}
+  m_Enabled: 1
+  m_AgentTypeID: 0
+  m_Radius: 0.5
+  m_Speed: 5
+  m_Acceleration: 291.04
+  avoidancePriority: 50
+  m_AngularSpeed: 195.4
+  m_StoppingDistance: 0.5
+  m_AutoTraverseOffMeshLink: 1
+  m_AutoBraking: 1
+  m_AutoRepath: 1
+  m_Height: 2
+  m_BaseOffset: 0
+  m_WalkableMask: 4294967295
+  m_ObstacleAvoidanceType: 0
 --- !u!114 &1621737664004410579
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -931,28 +953,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   NPCController: {fileID: 0}
---- !u!195 &1621737664004410573
-NavMeshAgent:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5416262071162981388}
-  m_Enabled: 1
-  m_AgentTypeID: 0
-  m_Radius: 0.5
-  m_Speed: 8
-  m_Acceleration: 291.04
-  avoidancePriority: 50
-  m_AngularSpeed: 195.4
-  m_StoppingDistance: 0.5
-  m_AutoTraverseOffMeshLink: 1
-  m_AutoBraking: 1
-  m_AutoRepath: 1
-  m_Height: 2
-  m_BaseOffset: 0
-  m_WalkableMask: 4294967295
-  m_ObstacleAvoidanceType: 0
 --- !u!1 &5931921956491927014
 GameObject:
   m_ObjectHideFlags: 0

@@ -36,7 +36,16 @@ public class Waiter : MonoBehaviour
     }
     public void LevelUp()
     {
-        if (CanLevelUp()) { level++; speed++; capacity++; wage++; Debug.Log("a waiter has leveled up"); }
+        if (CanLevelUp()) 
+        { 
+            level++; speed++; capacity++; wage++;
+            Debug.Log("a waiter has leveled up");
+            
+            NavMeshAgent agent = gameObject.GetComponent<NavMeshAgent>();
+            agent.speed++;
+            agent.acceleration += 5;
+            agent.angularSpeed += 10;
+        }
         else { Debug.Log("waiter do not have enough xp's to level up"); }
     }
 
@@ -123,6 +132,11 @@ public class Waiter : MonoBehaviour
         speed = data.speed;
         capacity = data.capacity;
         wage = data.wage;
+
+        NavMeshAgent agent = gameObject.GetComponent<NavMeshAgent>();
+        agent.speed = speed + 3;
+        agent.acceleration = 6 + 5 * (speed - 1);
+        agent.angularSpeed = 180 + 10 * (speed - 1);
     }
 
     public bool CompareWithData(WaiterData data)

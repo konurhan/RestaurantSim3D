@@ -260,7 +260,7 @@ public static class SaveSystem
         foreach (KeyValuePair<string,int> item in RestaurantManager.Instance.ingredientList)
         {
             //KeyValuePair<string, int> newIngredient = new KeyValuePair<string, int>(item.Key, item.Value);
-            storageStart.Add(item, 10);//10 of each element are given for the start
+            storageStart.Add(item, 40);//40 of each element are given for the start
         }
         return storageStart;
     }

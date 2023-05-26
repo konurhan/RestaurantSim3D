@@ -14,15 +14,14 @@ public class WaitForWaiterToTakeOrderTask : Node
         agent = customer.GetComponent<NavMeshAgent>();
         animator = customer.gameObject.GetComponent<Animator>();
     }
-    public override NodeState Evaluate()//implement after A*
+    public override NodeState Evaluate()
     {
         if (customer.isWaitingToOrder)
         {
             customer.Patience--;
             if (customer.Patience <= 0)
             {
-                //bu iki satırı test et
-                customer.seatTransform.gameObject.GetComponent<SeatController>().LeaveTheSeat();//test if this operation is succesful
+                customer.seatTransform.gameObject.GetComponent<SeatController>().LeaveTheSeat();
                 agent.SetDestination(RestaurantManager.Instance.RestaurantComponents.GetChild(2).position);
 
                 if (!customer.isLeaving)

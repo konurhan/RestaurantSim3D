@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 using static UnityEditor.Experimental.GraphView.Port;
 
 public class Cook : MonoBehaviour
@@ -34,7 +35,16 @@ public class Cook : MonoBehaviour
     }
     public void LevelUp()
     {
-        if (CanLevelUp()) { level++; speed++; talent++; wage++; Debug.Log("a waiter has leveled up"); }
+        if (CanLevelUp()) 
+        { 
+            level++; speed++; talent++; wage++; 
+            Debug.Log("a waiter has leveled up");
+
+            NavMeshAgent agent = gameObject.GetComponent<NavMeshAgent>();
+            agent.speed++;
+            agent.acceleration += 5;
+            agent.angularSpeed += 10;
+        }
         else { Debug.Log("cook do not have enough xp's to level up"); }
     }
     public void PrepareOrder(CustomerOrder customerOrder)//If a cook is idle and orderQueue is not empty call this method
@@ -80,6 +90,11 @@ public class Cook : MonoBehaviour
         speed = data.speed;
         talent = data.talent;
         wage = data.wage;
+
+        NavMeshAgent agent = gameObject.GetComponent<NavMeshAgent>();
+        agent.speed = speed + 3;
+        agent.acceleration = 6 + 5 * (speed - 1);
+        agent.angularSpeed = 180 + 10 * (speed - 1);
     }
 
     public bool CompareWithData(CookData data)

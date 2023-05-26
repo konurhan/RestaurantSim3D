@@ -211,9 +211,14 @@ public class MenuController : MonoBehaviour
         string name = ingredient.GetChild(4).GetChild(1).GetComponent<TextMeshProUGUI>().text;
         int price = int.Parse(ingredient.GetChild(2).GetChild(2).GetChild(0).GetComponent<TextMeshProUGUI>().text);
 
-        RestaurantManager.Instance.BuyIngredient(new KeyValuePair<string, int>(name,price));
+        for (int i = 0; i < 5; i++)
+        {
+            RestaurantManager.Instance.BuyIngredient(new KeyValuePair<string, int>(name, price));
+        }
+        
         int prevAmount = int.Parse(ingredient.GetChild(3).GetChild(2).GetChild(0).GetComponent<TextMeshProUGUI>().text);
-        prevAmount++;
+        //prevAmount++;
+        prevAmount += 5;
         ingredient.GetChild(3).GetChild(2).GetChild(0).GetComponent<TextMeshProUGUI>().text = prevAmount.ToString();
     }
 
