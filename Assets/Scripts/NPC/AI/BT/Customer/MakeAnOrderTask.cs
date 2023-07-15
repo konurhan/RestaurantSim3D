@@ -17,12 +17,16 @@ public class MakeAnOrderTask : Node
         if(customer.Thirst <= customer.Hunger)
         {
             int randFood = Random.Range(0, RestaurantManager.Instance.menu.GetComponent<Menu>().Foods.Count);
+            Debug.Log("customer is ordering randFood: " + randFood);
+            Debug.Log("menu food recipe count is "+ RestaurantManager.Instance.menu.GetComponent<Menu>().Foods.Count);
             order = RestaurantManager.Instance.menu.GetComponent<Menu>().Foods[randFood];
             
         }
         else
         {
             int randDrink = Random.Range(0, RestaurantManager.Instance.menu.GetComponent<Menu>().Drinks.Count);
+            Debug.Log("customer is ordering randDrink: " + randDrink);
+            Debug.Log("menu drink recipe count is " + RestaurantManager.Instance.menu.GetComponent<Menu>().Drinks.Count);
             order = RestaurantManager.Instance.menu.GetComponent<Menu>().Drinks[randDrink];
         }
 

@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
-using static UnityEditor.Experimental.GraphView.Port;
+
 
 public class Cook : MonoBehaviour
 {
@@ -17,11 +17,17 @@ public class Cook : MonoBehaviour
     public int preperationTime;//calculated seperately for each recipe
     public bool cooking;
     public bool delivering;
-    private void Start()
+
+    private void Awake()
     {
         cooking = false;
         currentOrder = null;
         preparedRecipe = null;
+    }
+
+    private void Start()
+    {
+        
     }
     private void Update()
     {
@@ -55,7 +61,9 @@ public class Cook : MonoBehaviour
        
         if (recipeData.IsFood)
         {
-            GameObject foodObject = Instantiate(Resources.Load("Menu/Foods/" + recipeData.Name)) as GameObject;
+            GameObject foodObject = ObjectPooling.Instance.GetPooledRecipe(true,recipeData.Name);
+            foodObject.SetActive(true);
+            Debug.Log("food  object name is: "+foodObject.name);
             foodObject.GetComponent<Food>().SetValues(recipeData);
             foodObject.GetComponent<Food>().Quality= quality;
             foodObject.GetComponent<Food>().Orderer= orderer;
@@ -63,7 +71,8 @@ public class Cook : MonoBehaviour
         }
         else
         {
-            GameObject drinkObject = Instantiate(Resources.Load("Menu/Drinks/" + recipeData.Name)) as GameObject;
+            GameObject drinkObject = ObjectPooling.Instance.GetPooledRecipe(false, recipeData.Name);
+            drinkObject.SetActive(true);
             drinkObject.GetComponent<Drink>().SetValues(recipeData);
             drinkObject.GetComponent<Drink>().Quality = quality;
             drinkObject.GetComponent<Drink>().Orderer = orderer;
@@ -105,5 +114,21 @@ public class Cook : MonoBehaviour
         if (data.talent != talent) return false;
         if (data.wage != wage) return false;
         return true;
+    }
+
+    public void ResetForTheNewDay()
+    {
+        if (preparedRecipe)
+        {
+            ObjectPooling.Instance.SetPooledRecipe(preparedRecipe);
+        }
+        cooking = false;
+        delivering = false;
+        preparedRecipe = null;
+        currentOrder = null;
+        Animator animator = gameObject.GetComponent<Animator>();
+        animator.SetBool("isCooking", false);
+        animator.SetBool("isCarrying", false);
+        animator.SetBool("isWalking", false);
     }
 }

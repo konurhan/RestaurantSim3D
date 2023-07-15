@@ -6,7 +6,6 @@ public abstract class BehaviorTree : MonoBehaviour
 {
     
     private Node root = null;
-    private int waitTime = 0;
 
     protected void Start()
     {

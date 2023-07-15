@@ -62,6 +62,12 @@ public class Drink : MonoBehaviour, IRecipe
 
     public void DestroyObject()
     {
-        Destroy(gameObject);
+        ObjectPooling.Instance.SetPooledRecipe(gameObject);
+    }
+
+    public void ResetStats()
+    {
+        quality = 0;
+        orderer = null;
     }
 }

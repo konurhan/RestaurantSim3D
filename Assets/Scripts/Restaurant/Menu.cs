@@ -12,8 +12,8 @@ public class Menu : MonoBehaviour
     
     private void Start()
     {
-        foods = new List<FoodData>();
-        drinks = new List<DrinkData>();
+        //foods = new List<FoodData>();
+        //drinks = new List<DrinkData>();
     }
     public List<FoodData> Foods
     {

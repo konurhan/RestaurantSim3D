@@ -59,29 +59,6 @@ public class CarryOrdersToCustomersTask : Node
                         nodeState = NodeState.SUCCEED;
                         return nodeState;
                     }
-                    /*if (waiter.inventory.Count > 0)
-                    {
-                        KeyValuePair<GameObject,Customer> order = waiter.inventory.First();
-                        if(order.Value != null)
-                        {
-                            agent.SetDestination(order.Value.seatTransform.position);
-                        }
-                        else
-                        {
-                            waiter.inventory.Remove(order.Key);
-                            order.Key.GetComponent<IRecipe>().DestroyObject();
-                        }
-                        
-                        nodeState = NodeState.RUNNING;
-                        return nodeState;
-                    }
-                    else//delivered all orders in the inventory
-                    {
-                        waiter.pickedUpOrders = false;
-                        waiter.delivering = false;
-                        nodeState = NodeState.SUCCEED;
-                        return nodeState;
-                    }*/
                 }
             }
         }

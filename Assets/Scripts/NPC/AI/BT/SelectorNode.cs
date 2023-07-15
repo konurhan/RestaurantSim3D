@@ -11,7 +11,7 @@ public class SelectorNode : Node
             switch (node.Evaluate())
             {
                 case NodeState.FAILED:
-                    break;
+                    continue;
                 case NodeState.RUNNING:
                     nodeState = NodeState.RUNNING;
                     return nodeState;

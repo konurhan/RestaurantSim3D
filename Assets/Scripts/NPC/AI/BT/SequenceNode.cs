@@ -17,7 +17,7 @@ public class SequenceNode : Node
                     nodeState = NodeState.RUNNING;
                     return nodeState;
                 case NodeState.SUCCEED:
-                    break;
+                    continue;
             }
         }
         nodeState = NodeState.SUCCEED;

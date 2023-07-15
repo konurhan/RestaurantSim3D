@@ -12,6 +12,7 @@ public class Storage : MonoBehaviour
     {
         instance = this;
         storedGoods = new Dictionary<KeyValuePair<string, int>, int>();
+
     }
 
     public Dictionary<KeyValuePair<string, int>, int> StoredGoods

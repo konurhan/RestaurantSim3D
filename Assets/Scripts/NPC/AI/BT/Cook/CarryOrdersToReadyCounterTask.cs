@@ -24,8 +24,8 @@ public class CarryOrdersToReadyCounterTask : Node
                 {
                     animator.SetBool("isCarrying", false);
                     Debug.Log("Cook arrived to readycounter");
-                    RestaurantManager.Instance.AddObjectToReadyCounter(cook.preparedRecipe);
-                    RestaurantManager.Instance.readyQueue.Enqueue(new KeyValuePair<GameObject, Customer>(cook.preparedRecipe, cook.currentOrder.orderer));
+                    RestaurantManager.Instance.AddObjectToReadyCounter(cook.preparedRecipe, new KeyValuePair<GameObject, Customer>(cook.preparedRecipe, cook.currentOrder.orderer));
+                    //RestaurantManager.Instance.readyQueue.Enqueue();
                     cook.delivering = false;
                     cook.preparedRecipe = null;
                     cook.currentOrder = null;

@@ -138,6 +138,7 @@ public static class SaveSystem
 
     public static MenuData LoadRestaurantMenuNull()
     {
+        Debug.Log("LoadRestaurantMenuNull is called");
         MenuData newMenuData = new MenuData();
         List<FoodData> newFoodsData = newMenuData.foods;
         List<DrinkData> newDrinksData = newMenuData.drinks;
@@ -147,12 +148,77 @@ public static class SaveSystem
         KeyValuePair<string, int> ingredient3 = new KeyValuePair<string, int>("water", 1);
         KeyValuePair<string, int> ingredient4 = new KeyValuePair<string, int>("salt", 1);
         Dictionary<KeyValuePair<string, int>, int> ingredientsFood = new Dictionary<KeyValuePair<string, int>, int>() { 
-            {ingredient1,1 },
-            {ingredient2,1 },
-            {ingredient3,1 },
+            {ingredient1,3 },
+            {ingredient2,2 },
+            {ingredient3,2 },
             {ingredient4,1 },
         };
         FoodData newFood = new FoodData("onionSoup", 0, ingredientsFood, 6, 4, 8, true);
+        newFoodsData.Add(newFood);
+
+        ingredient1 = new KeyValuePair<string, int>("onion", 1);
+        ingredient2 = new KeyValuePair<string, int>("beef", 1);
+        ingredient3 = new KeyValuePair<string, int>("water", 1);
+        ingredient4 = new KeyValuePair<string, int>("salt", 1);
+        KeyValuePair<string, int> ingredient5 = new KeyValuePair<string, int>("flour", 1);
+        KeyValuePair<string, int> ingredient6 = new KeyValuePair<string, int>("tomato", 1);
+        ingredientsFood = new Dictionary<KeyValuePair<string, int>, int>() {
+            {ingredient1,1 },
+            {ingredient2,3 },
+            {ingredient3,1 },
+            {ingredient4,1 },
+            {ingredient5,2 },
+            {ingredient6,1 },
+        };
+        newFood = new FoodData("cheeseBurger", 0, ingredientsFood, 14, 1, 15, true);
+        newFoodsData.Add(newFood);
+
+        ingredient1 = new KeyValuePair<string, int>("salt", 1);
+        ingredient2 = new KeyValuePair<string, int>("pepper", 1);
+        ingredient3 = new KeyValuePair<string, int>("chicken", 1);
+        ingredientsFood = new Dictionary<KeyValuePair<string, int>, int>() {
+            {ingredient1,1 },
+            {ingredient2,1 },
+            {ingredient3,3 },
+        };
+        newFood = new FoodData("chickenDrumsticks", 0, ingredientsFood, 12, 1, 14, true);
+        newFoodsData.Add(newFood);
+
+        ingredient1 = new KeyValuePair<string, int>("egg", 1);
+        ingredient2 = new KeyValuePair<string, int>("pepper", 1);
+        ingredient3 = new KeyValuePair<string, int>("salt", 1);
+        ingredientsFood = new Dictionary<KeyValuePair<string, int>, int>() {
+            {ingredient1,2 },
+            {ingredient2,1 },
+            {ingredient3,1 },
+        };
+        newFood = new FoodData("friedEgg", 0, ingredientsFood, 6, 1, 5, true);
+        newFoodsData.Add(newFood);
+
+        ingredient1 = new KeyValuePair<string, int>("egg", 1);
+        ingredient2 = new KeyValuePair<string, int>("flour", 1);
+        ingredient3 = new KeyValuePair<string, int>("sugar", 1);
+        ingredient4 = new KeyValuePair<string, int>("honey", 1);
+        ingredient5 = new KeyValuePair<string, int>("milk", 1);
+        ingredientsFood = new Dictionary<KeyValuePair<string, int>, int>() {
+            {ingredient1,1 },
+            {ingredient2,2 },
+            {ingredient3,1 },
+            {ingredient4,1 },
+            {ingredient5,2 },
+        };
+        newFood = new FoodData("pancakes", 0, ingredientsFood, 11, 1, 10, true);
+        newFoodsData.Add(newFood);
+
+        ingredient1 = new KeyValuePair<string, int>("beef", 1);
+        ingredient2 = new KeyValuePair<string, int>("salt", 1);
+        ingredient3 = new KeyValuePair<string, int>("pepper", 1);
+        ingredientsFood = new Dictionary<KeyValuePair<string, int>, int>() {
+            {ingredient1,3 },
+            {ingredient2,2 },
+            {ingredient3,2 },
+        };
+        newFood = new FoodData("steak", 0, ingredientsFood, 25, 1, 18, true);
         newFoodsData.Add(newFood);
 
         ingredient1 = new KeyValuePair<string, int>("orange", 1);
@@ -165,9 +231,42 @@ public static class SaveSystem
             {ingredient3,1 },
             {ingredient4,1 },
         };
-
         DrinkData newDrink = new DrinkData("mixedFruitJuice", 0, ingredientsDrink, 7, 8, 1, false);
         newDrinksData.Add(newDrink);
+
+        ingredient1 = new KeyValuePair<string, int>("water", 1);
+        ingredient2 = new KeyValuePair<string, int>("lemon", 1);
+        ingredient3 = new KeyValuePair<string, int>("salt", 1);
+        ingredientsDrink = new Dictionary<KeyValuePair<string, int>, int>() {
+            {ingredient1,2 },
+            {ingredient2,1 },
+            {ingredient3,1 },
+        };
+        newDrink = new DrinkData("SparklingWater", 0, ingredientsDrink, 4, 12, 1, false);
+        newDrinksData.Add(newDrink);
+
+        ingredient1 = new KeyValuePair<string, int>("milk", 1);
+        ingredient2 = new KeyValuePair<string, int>("cacao", 1);
+        ingredient3 = new KeyValuePair<string, int>("cinnamon", 1);
+        ingredientsDrink = new Dictionary<KeyValuePair<string, int>, int>() {
+            {ingredient1,3 },
+            {ingredient2,2 },
+            {ingredient3,1 },
+        };
+        newDrink = new DrinkData("MilkShake", 0, ingredientsDrink, 10, 7, 5, false);
+        newDrinksData.Add(newDrink);
+
+        ingredient1 = new KeyValuePair<string, int>("water", 1);
+        ingredient2 = new KeyValuePair<string, int>("lemon", 1);
+        ingredient3 = new KeyValuePair<string, int>("sugar", 1);
+        ingredientsDrink = new Dictionary<KeyValuePair<string, int>, int>() {
+            {ingredient1,3 },
+            {ingredient2,2 },
+            {ingredient3,4 },
+        };
+        newDrink = new DrinkData("Gazoz", 0, ingredientsDrink, 6, 9, 1, false);
+        newDrinksData.Add(newDrink);
+        //Debug.Log("food and drink from loadmenunull method "+newMenuData.foods[0].Name+" "+ newMenuData.drinks[0].Name);
         return newMenuData;
     }
 
@@ -213,7 +312,7 @@ public static class SaveSystem
         {
             {"salt",1 },{"pepper",1},{"sugar",1 },{"cinnamon",1},{"flour",1 },{"beef",1},{"chicken",1 },{"onion",1},
             {"potato",1 },{"tomato",1 },{"milk",1 },{"water",1 },{"cacao",1},{"honey",1},{"pineapple",1},{"lemon",1},
-            {"orange",1 },{"watermelon",1}
+            {"orange",1 },{"watermelon",1},{"egg",1}
         };
         return ingredientsStart;
     }

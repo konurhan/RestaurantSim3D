@@ -12,13 +12,14 @@ public class MenuController : MonoBehaviour
     //public Transform hireFireCanvas;
     //private Transform saveTransform;
     //private Transform loadTransform;
+    [SerializeField] private List<float> last200Frames;
 
     public Transform menuPopUp;
     public Transform waitersPopUp;
     public Transform cooksPopUp;
     public Transform ingredientsPopUp;
     public Transform EndOfTheDayPopup;
-
+    public Transform FPSCount;
     private void Awake()
     {
         Instance = this;
@@ -36,6 +37,26 @@ public class MenuController : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Escape)) saveLoadCanvas.gameObject.SetActive(!saveLoadCanvas.gameObject.activeSelf);//closing and opening the menu
         //if (Input.GetKeyDown(KeyCode.F)) hireFireCanvas.gameObject.SetActive(!hireFireCanvas.gameObject.activeSelf);
+        CalculateFPS();
+    }
+
+    public void CalculateFPS()
+    {
+        if (last200Frames.Count < 200)
+        {
+            last200Frames.Add(Time.deltaTime);
+            return;
+        }
+
+        last200Frames.Add(Time.deltaTime);
+        last200Frames.RemoveAt(0);
+
+        float totalTime = 0f;
+        for (int i = 0; i < 200; i++)
+        {
+            totalTime += last200Frames[i];
+        }
+        FPSCount.GetComponent<TextMeshProUGUI>().text = "FPS: " + ((int)(200 / totalTime)).ToString();
     }
 
     public void SetUpMenuElements()//should be called at the start after the menu is loaded from the save file
@@ -198,9 +219,8 @@ public class MenuController : MonoBehaviour
             slot.GetChild(2).GetChild(2).GetChild(0).GetComponent<TextMeshProUGUI>().text = good.Key.Value.ToString();//price
             slot.GetChild(3).GetChild(2).GetChild(0).GetComponent<TextMeshProUGUI>().text = good.Value.ToString();//amount
             slot.GetChild(4).GetChild(1).GetComponent<TextMeshProUGUI>().text = good.Key.Key;//name
-
+            //slot.GetChild(5).GetChild(1).GetComponent<Image>().sprite = Resources.Load("/Ingredients/"+ good.Key.Key) as Sprite;
             cursor++;
-            //image here
         }
     }
 

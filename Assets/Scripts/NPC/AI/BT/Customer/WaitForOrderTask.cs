@@ -31,6 +31,7 @@ public class WaitForOrderTask : Node
                     Debug.Log("Customer is leaving angry, order was late");//called more than once
 
                     animator.SetBool("isSitting", false);
+                    //customer.gameObject.transform.position -= Vector3.up / 4;
                 }
                 //CustomerArrivalManager.Instance.CheckForEndOfTheDay();
 

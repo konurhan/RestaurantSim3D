@@ -19,6 +19,8 @@ public interface IRecipe
     }
 
     public void DestroyObject();
+
+    public void ResetStats();
 }
 
 public interface IRecipeData

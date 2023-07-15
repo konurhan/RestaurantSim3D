@@ -31,6 +31,7 @@ public class WaitForWaiterToTakeOrderTask : Node
                     Debug.Log("Customer is leaving angry, couldn't make the order");
 
                     animator.SetBool("isSitting", false);
+                    //customer.gameObject.transform.position -= Vector3.up / 4;
                 }
 
                 nodeState = NodeState.FAILED;

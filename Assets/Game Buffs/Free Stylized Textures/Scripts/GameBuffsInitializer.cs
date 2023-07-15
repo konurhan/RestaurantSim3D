@@ -1,6 +1,7 @@
 using UnityEditor;
 using UnityEngine;
 
+#if UNITY_EDITOR
 namespace GameBuffs.FreeStylizedTextures
 {
     [InitializeOnLoad]
@@ -34,3 +35,4 @@ namespace GameBuffs.FreeStylizedTextures
         }
     }
 }
+#endif

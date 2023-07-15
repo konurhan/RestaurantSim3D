@@ -20,30 +20,46 @@ public class Customer : MonoBehaviour
     public bool isWaitingToOrder;
     public bool isLeaving;
     public List<GameObject> inventory;
-
     public NavMeshAgent agent;
-
     private void Start()
     {
         agent = transform.gameObject.GetComponent<NavMeshAgent>();
-        isWaitingToEatDrink = true;
-        isWaitingToOrder = true;
         basePatience = 10000;
+        inventory = new List<GameObject>();
+        /*isWaitingToEatDrink = true;
+        isWaitingToOrder = true;
         patience = basePatience;
         satisfactionScore = 0;
         hunger = Random.Range(75, 80);
         thirst = Random.Range(75, 80);
         serviceScore = 0;
-        inventory = new List<GameObject>();
         isSeated = false;
         seatTransform = null;//seat is not assigned
         isOrdered = false;
-        isOrderArrived = false;
+        isOrderArrived = false;*/
+        ResetStatsAfterReturnToPool();
+        gameObject.GetComponent<Animator>().speed = 2.0f;
     }
-
     private void Update()
     {
 
+    }
+    public void ResetStatsAfterReturnToPool()
+    {
+        isWaitingToEatDrink = true;
+        isWaitingToOrder = true;
+        patience = basePatience;
+        satisfactionScore = 0;
+        hunger = Random.Range(75, 80);
+        thirst = Random.Range(75, 80);
+        serviceScore = 0;
+        inventory.Clear();
+        isSeated = false;
+        seatTransform = null;//seat is not assigned
+        isCalledWaiter = false;
+        isOrdered = false;
+        isOrderArrived = false;
+        isLeaving = false;
     }
 
     public void FindAnEmptySeat()//called after instantiation, find navigate and sit to an empty seat
@@ -53,7 +69,7 @@ public class Customer : MonoBehaviour
 
     public void DestroyConsumedItem(GameObject inventoryFoodDrink)
     {
-        Destroy(inventoryFoodDrink);
+        ObjectPooling.Instance.SetPooledRecipe(inventoryFoodDrink);
     }
 
     public void TakeOnOrder(GameObject order)
@@ -73,7 +89,7 @@ public class Customer : MonoBehaviour
     public void Leave()
     {
         RateService();
-        Destroy(gameObject);
+        ObjectPooling.Instance.SetPooledCustomer(gameObject);//poling rather than destroying
     }
 
     public int Thirst

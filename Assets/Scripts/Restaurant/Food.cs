@@ -50,7 +50,7 @@ public class Food : MonoBehaviour, IRecipe
 
     public void DestroyObject()
     {
-        Destroy(gameObject);
+        ObjectPooling.Instance.SetPooledRecipe(gameObject);
     }
 
     public void SetPrice(int newPrice)
@@ -64,5 +64,10 @@ public class Food : MonoBehaviour, IRecipe
         price = data.Price;
         thirst = data.Thirst;
         hunger = data.Hunger;
+    }
+    public void ResetStats()
+    {
+        quality = 0;
+        orderer = null;
     }
 }

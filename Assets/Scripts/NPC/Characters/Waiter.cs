@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.UIElements;
@@ -23,11 +24,15 @@ public class Waiter : MonoBehaviour
 
     public NavMeshAgent agent;
 
-    private void Start()
+    private void Awake()
     {
         agent = transform.gameObject.GetComponent<NavMeshAgent>();
         inventory = new Dictionary<GameObject, Customer>();
         pickedUpOrders = false;
+    }
+    private void Start()
+    {
+        
     }
     public bool CanLevelUp()
     {
@@ -84,14 +89,14 @@ public class Waiter : MonoBehaviour
         //Debug.Log("center of tray local position is" + centerOfTray.localPosition);
         int onTrayOrdersCount = inventory.Count;
         int sliceCount = 0;
-        float radius = 0.5f;
+        float radius = 0.25f;
         foreach (KeyValuePair<GameObject, Customer> order in inventory)
         {
             float degree = 2*Mathf.PI * sliceCount / onTrayOrdersCount;
             //Debug.Log("degree of a slice is " + degree);
             Vector3 offset = new Vector3(radius*Mathf.Sin(degree), 0, -radius * Mathf.Cos(degree));
             //Debug.Log("offset of slice " + (sliceCount + 1) + " is: " + offset);
-            order.Key.transform.localPosition = centerOfTray.localPosition + offset;
+            order.Key.transform.localPosition = centerOfTray.localPosition + offset ;
 
             //Debug.Log("localPos of slice "+(sliceCount+1)+" is: " + order.Key.transform.localPosition);
             sliceCount++;
@@ -114,8 +119,8 @@ public class Waiter : MonoBehaviour
         else if(customer.isLeaving)
         {
             Debug.Log("Customer is leaving, order was late. It will go to trash :(");
-            inventory.Remove(order);
-            Destroy(order);
+            RemoveOrderFromTray(order);
+            ObjectPooling.Instance.SetPooledRecipe(order);
         }
         
     }
@@ -147,5 +152,25 @@ public class Waiter : MonoBehaviour
         if (data.capacity!= capacity) return false;
         if (data.wage!= wage) return false;
         return true;
+    }
+
+    public void ResetForTheNewDay()
+    {
+        Debug.Log("ResetForTheNewDay is called");
+        pickedUpOrders = false;
+        currentCustomer = null;
+        if (inventory.Count == 0)
+        {
+            Debug.Log("waiter already has an empty inventory");
+            return;
+        }
+        Debug.Log("waiter has "+inventory.Count+" orders in inventory to be destroyed");
+        foreach (GameObject item in inventory.Keys.ToList())
+        {
+            RemoveOrderFromTray(item);
+            ObjectPooling.Instance.SetPooledRecipe(item);
+            Debug.Log("SetPooledRecipe is called to destroy remaining recipes on the sstart of a day");
+        }
+        
     }
 }

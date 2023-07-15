@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class CustomerArrivalManager : MonoBehaviour
 {
@@ -21,6 +22,7 @@ public class CustomerArrivalManager : MonoBehaviour
     {
         Instance = this;
         counter = 0;
+
     }
 
     private void Start()
@@ -53,14 +55,12 @@ public class CustomerArrivalManager : MonoBehaviour
     public void StartOfTheDayOperations()
     {
         MenuController.Instance.EndOfTheDayPopup.gameObject.SetActive(false);
-        RestaurantManager.Instance.DailyReset();
+        //RestaurantManager.Instance.DailyReset();
         dayHasEnded = false;
         float pop = RestaurantManager.Instance.popularity;
         dailyCount = (int)Random.Range(pop - pop / 10, pop + pop / 10);
         Debug.Log(dailyCount + " customers will visit today.");
         counter = (int)(90f / Time.fixedDeltaTime) / dailyCount;
-        Debug.Log("fixedDeltaTime value is: " + Time.fixedDeltaTime);
-        Debug.Log("counter value is: " + counter);
         count = 0;
     }
 
@@ -69,10 +69,14 @@ public class CustomerArrivalManager : MonoBehaviour
         //finish the day
         dayHasEnded = true;
         Transform customersParent = RestaurantManager.Instance.RestaurantComponents.GetChild(6);
-        foreach (Transform child in customersParent)//destroy all existing customers
+        foreach (Transform child in customersParent)//setting all existing customers back to the pool
         {
-            Debug.Log("EndOfTheDayOperations destroying a customer");
-            Destroy(child.gameObject);
+            Debug.Log("EndOfTheDayOperations setting a customer back to the pool");
+            ObjectPooling.Instance.SetPooledCustomer(child.gameObject);
+        }
+        foreach (GameObject seat in RestaurantManager.Instance.seats)
+        {
+            seat.GetComponent<SeatController>().LeaveTheSeat();
         }
         //pay wages
         RestaurantManager.Instance.PayWages();
@@ -84,12 +88,13 @@ public class CustomerArrivalManager : MonoBehaviour
         Eof.GetChild(2).GetChild(1).GetComponent<TextMeshProUGUI>().text = RestaurantManager.Instance.dailyEarnings.ToString();
         Eof.GetChild(3).GetChild(1).GetComponent<TextMeshProUGUI>().text = RestaurantManager.Instance.satisfiedCustomers.ToString();
         Eof.GetChild(4).GetChild(1).GetComponent<TextMeshProUGUI>().text = RestaurantManager.Instance.dailyPopularityChange.ToString();
+        RestaurantManager.Instance.DailyReset();
     }
 
     public void InstantiateCustomer()//instantiate customers to arrive at random times of the day
     {
-        GameObject customer = Instantiate(Resources.Load("Prefab/Customer"), customerSpawnTransform.position, Quaternion.identity) as GameObject;
-        customer.transform.SetParent(RestaurantManager.Instance.RestaurantComponents.GetChild(6), true);
+        GameObject customer = ObjectPooling.Instance.GetPooledCustomer();
+        customer.SetActive(true);
     }
 
     

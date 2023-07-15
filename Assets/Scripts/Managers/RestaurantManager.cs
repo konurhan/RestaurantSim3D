@@ -43,6 +43,11 @@ public class RestaurantManager : MonoBehaviour
         orderQueue = new Queue<CustomerOrder>();
         readyQueue = new Queue<KeyValuePair<GameObject, Customer>>();
         ingredientList = new Dictionary<string, int>();
+#if UNITY_EDITOR
+        Debug.unityLogger.logEnabled = true;
+#else
+        Debug.unityLogger.logEnabled = false;
+#endif
     }
 
     private void Start()
@@ -65,6 +70,7 @@ public class RestaurantManager : MonoBehaviour
     void Update()
     {
         UITopBarUpdate();
+        Debug.Log("menu food count: " + menu.GetComponent<Menu>().Foods.Count);
     }
     
     public void DailyReset()
@@ -75,6 +81,22 @@ public class RestaurantManager : MonoBehaviour
         dailySpendings = 0;
         dailyEarnings = 0;
         dailyPopularityChange = 0;
+
+        foreach(GameObject waiter in waiters)
+        {
+            waiter.GetComponent<Waiter>().ResetForTheNewDay();
+        }
+        foreach (GameObject cook in cooks)
+        {
+            cook.GetComponent<Cook>().ResetForTheNewDay();
+        }
+        orderRequestQueue.Clear();
+        orderQueue.Clear();
+        foreach(KeyValuePair<GameObject, Customer> order in readyQueue)
+        {
+            ObjectPooling.Instance.SetPooledRecipe(order.Key);
+        }
+        readyQueue.Clear();
     }
 
     public void PayWages()
@@ -276,6 +298,8 @@ public class RestaurantManager : MonoBehaviour
         LoadIngredientList();//load existing ingerdient types and prices
         Storage.instance.Load();//loading storage
         menu.GetComponent<Menu>().Load();
+        Debug.Log("menu is loaded, drink1: " + menu.GetComponent<Menu>().Drinks[0].Name + ", food1: " + menu.GetComponent<Menu>().Foods[0].Name);
+        Debug.Log("menu food count: " + menu.GetComponent<Menu>().Foods.Count);
         LoadStats();
 
     }
@@ -316,8 +340,9 @@ public class RestaurantManager : MonoBehaviour
         }
     }
 
-    public void AddObjectToReadyCounter(GameObject readyOrder)
+    public void AddObjectToReadyCounter(GameObject readyOrder, KeyValuePair<GameObject, Customer> pair)
     {
+        readyQueue.Enqueue(pair);
         Transform readyCounter = RestaurantComponents.GetChild(5);
         readyOrder.transform.parent = readyCounter;
         ArrangeReadyCounterObjects();
@@ -334,9 +359,11 @@ public class RestaurantManager : MonoBehaviour
     {
         //int readyCount = readyQueue.Count;
         int cursor = 0;
+        int count = readyQueue.Count;
         foreach (KeyValuePair <GameObject, Customer> pair in readyQueue) 
         {
-            pair.Key.transform.localPosition = Vector3.up - 2 * Vector3.left + (cursor * Vector3.right) / 4;
+            pair.Key.transform.localPosition = Vector3.up*3/5f + (0.8f * Vector3.back) + (cursor/(float)count * Vector3.forward * 1.6f);
+            //pair.Key.transform.position = Vector3.zero;
             cursor++;
         }
     }
