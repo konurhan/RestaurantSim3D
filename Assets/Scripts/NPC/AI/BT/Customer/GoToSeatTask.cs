@@ -29,16 +29,9 @@ public class GoToSeatTask : Node
                     Debug.Log("Customer arrived to his seat");
                     customer.isSeated = true;
                     //agent.updateRotation = false;
-                    int lookAt = customer.seatTransform.GetSiblingIndex();
-                    if(lookAt == 0 ||  lookAt == 1)//look towards the enterance
-                    {
-                        customer.gameObject.transform.eulerAngles = Vector3.zero;
-                        Debug.Log("setting customer lookat");
-                    }
-                    else//look towards the kitchen
-                    {
-                        customer.gameObject.transform.eulerAngles = new Vector3(0,180,0);
-                    }
+                    Transform lookAtDir = customer.seatTransform.GetChild(0);
+                    customer.gameObject.transform.LookAt(lookAtDir);
+
                     //agent.updateRotation = true;
                     nodeState = NodeState.SUCCEED;
                     return nodeState;

@@ -411,4 +411,107 @@ public static class SaveSystem
         return statsStart;
     }
 
+    public static void SaveTables(List<Vector3[]> transforms)
+    {
+        /*List<SerializableVector3[]> trans = new List<SerializableVector3[]>();
+        for (int i = 0; i < transforms.Count; i++)
+        {
+            trans[i][0].x = transforms[i][0].x; trans[i][0].y = transforms[i][0].y; trans[i][0].z = transforms[i][0].z; //position
+            trans[i][1].x = transforms[i][1].x; trans[i][1].y = transforms[i][1].y; trans[i][1].z = transforms[i][1].z; //eulerangles
+        }*/
+        List<SerializableVector3[]> trans = Vector3ToStruct(transforms);
+        BinaryFormatter formatter = new BinaryFormatter();
+
+        string path = Application.persistentDataPath + "/tables.dat";
+        FileStream stream;
+        if (File.Exists(path))
+        {
+            stream = new FileStream(path, FileMode.Open, FileAccess.Write);
+        }
+        else
+        {
+            stream = new FileStream(path, FileMode.Create, FileAccess.Write);
+        }
+        formatter.Serialize(stream, trans);
+        stream.Close();
+    }
+
+    public static List<Vector3[]> LoadTables()
+    {
+        List<Vector3[]> returnVal;
+        string path = Application.persistentDataPath + "/tables.dat";
+        if (File.Exists(path))
+        {
+            BinaryFormatter formatter = new BinaryFormatter();
+            FileStream stream = new FileStream(path, FileMode.Open, FileAccess.Read);
+            List<SerializableVector3[]> stats = formatter.Deserialize(stream) as List<SerializableVector3[]>;
+            stream.Close();
+            returnVal = StructToVector3(stats);
+            return returnVal;
+        }
+        else
+        {
+            Debug.Log("Couldn't find restaurantStats save file");
+            return null;
+        }
+    }
+
+    public static List<Vector3[]> LoadTablesNull()//there are no predefined restaurant stats in the save file
+    {
+        Vector3 pos1 = new Vector3(25, -1.4f, 24.4f);
+        Vector3 pos2 = new Vector3(5, -1.4f, 24.4f);
+        Vector3 pos3 = new Vector3(5, -1.4f, 12.5f);
+        Vector3 pos4 = new Vector3(25, -1.4f, 12.5f);
+
+        Vector3 localEulerAngles = Vector3.zero;
+        Vector3 localScale = new Vector3(1.5f, 1.5f, 1.5f);
+
+        List<Vector3[]> statsStart = new List<Vector3[]>
+        {
+            new Vector3[3] {pos1, localEulerAngles, localScale},
+            new Vector3[3] {pos2, localEulerAngles, localScale},
+            new Vector3[3] {pos3, localEulerAngles, localScale},
+            new Vector3[3] {pos4, localEulerAngles, localScale}
+        };
+        return statsStart;
+    }
+
+    public static List<SerializableVector3[]> Vector3ToStruct(List<Vector3[]> toConvert)
+    {
+        List<SerializableVector3[]> converted = new List<SerializableVector3[]>();
+        for (int i = 0; i < toConvert.Count; i++)
+        {
+            converted.Add(new SerializableVector3[toConvert[i].Length]);
+            for (int j = 0; j < toConvert[i].Length; j++)
+            {
+                Debug.Log("Vector3ToStruct (i,j): " + i + " " + j);
+                converted[i][j] = new SerializableVector3();
+                converted[i][j].x = toConvert[i][j].x; converted[i][j].y = toConvert[i][j].y; converted[i][j].z = toConvert[i][j].z;
+            }
+        }
+        return converted;
+    }
+
+    public static List<Vector3[]> StructToVector3(List<SerializableVector3[]> toConvert)
+    {
+        List<Vector3[]> converted = new List<Vector3[]>();
+        for (int i = 0; i < toConvert.Count; i++)
+        {
+            converted.Add(new Vector3[toConvert[i].Length]);
+            for (int j = 0; j < toConvert[i].Length; j++)
+            {   
+                converted[i][j] = new Vector3();
+                converted[i][j].x = toConvert[i][j].x; converted[i][j].y = toConvert[i][j].y; converted[i][j].z = toConvert[i][j].z;
+            }
+        }
+        return converted;
+    }
+}
+
+[System.Serializable]
+public struct SerializableVector3
+{
+    public float x;
+    public float y;
+    public float z;
 }

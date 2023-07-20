@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using Unity.VisualScripting;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -20,6 +22,9 @@ public class MenuController : MonoBehaviour
     public Transform ingredientsPopUp;
     public Transform EndOfTheDayPopup;
     public Transform FPSCount;
+    public Transform PlacementPopup;
+    public Transform BottomBar;
+    public Transform VCamTarget;
     private void Awake()
     {
         Instance = this;
@@ -288,5 +293,43 @@ public class MenuController : MonoBehaviour
     public void CloseIngredientsPopup()
     {
         ingredientsPopUp.gameObject.SetActive(false);
+    }
+
+    public void OpenPlacementPopup()
+    {
+        VCamTarget.gameObject.GetComponent<VCamController>().mouseDragEnabled = false;
+        VCamTarget.gameObject.GetComponent<VCamController>().edgescrollingEnabled = false;
+        PlacementSystem.Instance.isPlacementActive = true;
+        PlacementPopup.gameObject.SetActive(true);
+        PlacementSystem.Instance.StartPlacemnet();
+        //when placement popup is active others should be deactivated, including the day end popup
+        CloseCooksPopup();
+        CloseWaitersPopup();
+        CloseMenuPopup();
+        CloseIngredientsPopup();
+        EndOfTheDayPopup.gameObject.SetActive(false);
+        BottomBar.gameObject.SetActive(false);
+    }
+
+    public void ClosePlacementPopup()
+    {
+        VCamTarget.gameObject.GetComponent<VCamController>().mouseDragEnabled = true;
+        VCamTarget.gameObject.GetComponent<VCamController>().edgescrollingEnabled = true;
+        PlacementSystem.Instance.isPlacementActive = false;
+        PlacementPopup.gameObject.SetActive(false);
+        PlacementSystem.Instance.FinalizePlacement();
+        //when placement popup is deactived day end popup should be activated along with bottom bar buttons
+        EndOfTheDayPopup.gameObject.SetActive(true);
+        BottomBar.gameObject.SetActive(true);
+    }
+
+    public void NewTable()
+    {
+        PlacementSystem.Instance.InitializeTable();
+    }
+
+    public void SetSeatingTableActive()
+    {
+
     }
 }

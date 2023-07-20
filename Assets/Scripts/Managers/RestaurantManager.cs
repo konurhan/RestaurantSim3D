@@ -36,6 +36,11 @@ public class RestaurantManager : MonoBehaviour
 
     public Dictionary<string, int> ingredientList;//list of ingredient types and prices
 
+    public GameObject navmesh;
+    public GameObject navmesh2;
+
+    public List<Transform> tables;
+
     private void Awake()
     {
         Instance = this;
@@ -52,9 +57,9 @@ public class RestaurantManager : MonoBehaviour
 
     private void Start()
     {
-        LoadGame();
         cooks = new List<GameObject>();
         waiters = new List<GameObject>();
+        LoadGame();
         InstantiateCooks();
         InstantiateWaiters();
 
@@ -65,6 +70,8 @@ public class RestaurantManager : MonoBehaviour
         satisfiedCustomers = 0;
         angryCustomers = 0;
         deniedCustomers = 0;
+
+        PlacementSystem.Instance.BakeNavMeshSurface();
     }
 
     void Update()
@@ -212,6 +219,7 @@ public class RestaurantManager : MonoBehaviour
         Storage.instance.RemoveIngredient(newIngredient);
     }
 
+    #region SaveLoad
     private void InstantiateCooks()
     {
         List<CookData> loadedCooks = SaveSystem.LoadCooks();
@@ -223,6 +231,7 @@ public class RestaurantManager : MonoBehaviour
             GameObject cookObject = Instantiate(Resources.Load("Prefab/Cook")) as GameObject;
             cookObject.GetComponent<Cook>().SetUp(data);
             cooks.Add(cookObject);
+            cookObject.transform.SetParent(RestaurantComponents.GetChild(9), true);
         }
     }
 
@@ -237,6 +246,7 @@ public class RestaurantManager : MonoBehaviour
             GameObject waiterObject = Instantiate(Resources.Load("Prefab/Waiter")) as GameObject;
             waiterObject.GetComponent<Waiter>().SetUp(data);
             waiters.Add(waiterObject);
+            waiterObject.transform.SetParent(RestaurantComponents.GetChild(10), true);
         }
     }
 
@@ -293,15 +303,50 @@ public class RestaurantManager : MonoBehaviour
         SaveSystem.SaveWaiters(waiters);
     }
 
+    public void LoadTables()//local scales are not implemented
+    {
+        //savesystem side
+        List<Vector3[]> loadedTables = SaveSystem.LoadTables();
+        if(loadedTables == null ) loadedTables = SaveSystem.LoadTablesNull();
+        //
+
+        Transform tablesParent = RestaurantComponents.GetChild(1);
+        for (int i = 0; i < loadedTables.Count; i++)
+        {
+            Vector3 position = loadedTables[i][0];
+            Vector3 rotation = loadedTables[i][1];//check if works fine
+            GameObject table = Instantiate(Resources.Load("Prefab/TablePlacable")) as GameObject;
+            table.transform.localEulerAngles = rotation;
+            table.transform.position = position;
+            table.transform.SetParent(tablesParent, true);
+        }
+        
+    }
+
+    public void SaveTables()//local scales are not implemented
+    {
+        List<Vector3[]> transforms = new List<Vector3[]>();
+        for (int i = 0; i < tables.Count; i++)
+        {
+            Vector3 pos = tables[i].position;
+            Vector3 eul = tables[i].localEulerAngles;
+            Vector3[] values = new Vector3[3] { pos, eul, Vector3.zero};
+            transforms.Add(values);
+        }
+        SaveSystem.SaveTables(transforms);
+    }
+
     public void LoadGame()//call in awake or start, includes all load functions at one place
     {
+        InstantiateCooks();
+        InstantiateWaiters();
         LoadIngredientList();//load existing ingerdient types and prices
         Storage.instance.Load();//loading storage
         menu.GetComponent<Menu>().Load();
         Debug.Log("menu is loaded, drink1: " + menu.GetComponent<Menu>().Drinks[0].Name + ", food1: " + menu.GetComponent<Menu>().Foods[0].Name);
         Debug.Log("menu food count: " + menu.GetComponent<Menu>().Foods.Count);
         LoadStats();
-
+        LoadTables();
     }
     public void SaveGame()//call when a button is hit contains all save functions at one place
     {
@@ -311,8 +356,10 @@ public class RestaurantManager : MonoBehaviour
         SaveStats();
         SaveCooks(cooks);
         SaveWaiters(waiters);
+        SaveTables();
     }
 
+    #endregion
     public void ResetGame()
     {
         string[] files = Directory.GetFiles(Application.persistentDataPath);
@@ -325,6 +372,7 @@ public class RestaurantManager : MonoBehaviour
 
     public void CacheSeats()
     {
+        seats.Clear();
         Transform tables = RestaurantComponents.GetChild(1);
         for (int i = 0; i < tables.childCount; i++)
         {
@@ -337,6 +385,16 @@ public class RestaurantManager : MonoBehaviour
             {
                 seats.Add(ithTable.GetChild(j).gameObject);
             }
+        }
+    }
+
+    public void CacheTables()
+    {
+        tables.Clear();
+        Transform tablesParent = RestaurantComponents.GetChild(1);
+        for (int i = 0; i < tablesParent.childCount; i++)
+        {
+            tables.Add(tablesParent.GetChild(i));
         }
     }
 
@@ -362,7 +420,7 @@ public class RestaurantManager : MonoBehaviour
         int count = readyQueue.Count;
         foreach (KeyValuePair <GameObject, Customer> pair in readyQueue) 
         {
-            pair.Key.transform.localPosition = Vector3.up*3/5f + (0.8f * Vector3.back) + (cursor/(float)count * Vector3.forward * 1.6f);
+            pair.Key.transform.localPosition = Vector3.up*9/10f + (0.8f * Vector3.back) + (cursor/(float)count * Vector3.forward * 1.6f);
             //pair.Key.transform.position = Vector3.zero;
             cursor++;
         }
