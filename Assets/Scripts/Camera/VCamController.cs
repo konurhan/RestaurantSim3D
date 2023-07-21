@@ -7,17 +7,30 @@ public class VCamController : MonoBehaviour
 {
     [SerializeField] private float movementSpeed = 35f;
     [SerializeField] private float rotationSpeed = 90f;
-    //[SerializeField] private CinemachineVirtualCameraBase vcam;
+    [SerializeField] private CinemachineVirtualCamera vcam;
     public bool edgescrollingEnabled = true;
     public bool mouseDragEnabled = true;
     public bool rotationEnabled = true;
 
     [SerializeField] private bool mouseDragging = true;
     [SerializeField] private Vector2 lastMousePosition;
+
+    private Vector3 followOffset;
+    private Vector3 zoomDir;
+
+    private float minOffset = 5f;
+    private float maxOffset = 15f;
+
+    private void Start()
+    {
+        followOffset = vcam.GetCinemachineComponent<CinemachineTransposer>().m_FollowOffset;
+        zoomDir = vcam.GetCinemachineComponent<CinemachineTransposer>().m_FollowOffset.normalized;
+    }
     void Update()
     {
         CameraMovementControl();
         CameraRotationControl();
+        CameraZoomControl();
         BoundMovementArea();
     }
 
@@ -94,6 +107,28 @@ public class VCamController : MonoBehaviour
 
     public void CameraZoomControl()
     {
+        //float ratio = Mathf.Abs(vcam.GetCinemachineComponent<CinemachineTransposer>().m_FollowOffset.y / vcam.GetCinemachineComponent<CinemachineTransposer>().m_FollowOffset.z);
+        
+        //Vector3 zoomDir = vcam.GetCinemachineComponent<CinemachineTransposer>().m_FollowOffset.normalized;
+        //int zoomAmount = 0;
+        if(Input.mouseScrollDelta.y > 0)
+        {
+            followOffset -= zoomDir;
+        }
+        if (Input.mouseScrollDelta.y < 0)
+        {
+            followOffset += zoomDir;
+        }
+        //clamp follow offset here
+        if(followOffset.magnitude < minOffset)
+        {
+            followOffset = zoomDir * minOffset;
+        }
+        if(followOffset.magnitude > maxOffset)
+        {
+            followOffset = zoomDir * maxOffset;
+        }
+        vcam.GetCinemachineComponent<CinemachineTransposer>().m_FollowOffset = Vector3.Lerp(vcam.GetCinemachineComponent<CinemachineTransposer>().m_FollowOffset, followOffset, Time.deltaTime * 10);
         
     }
 }
